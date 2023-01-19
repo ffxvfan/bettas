@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="who cares"
+[[mods]]
+modId="bettas"
+version="${file.jarVersion}"
+displayName="𝓓ragN's Betta Fish Mod"
+logoFile="replaceme.png"
+credits=""
+authors="𝓓ragN, EvangeliX"
+description='''
+
+'''
+[[dependencies.bettas]]
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[36,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.bettas]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
