@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"Swim": {
+		"swim": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -289,7 +289,7 @@
 				}
 			}
 		},
-		"Idle": {
+		"idle": {
 			"loop": true,
 			"animation_length": 5,
 			"bones": {
@@ -430,7 +430,7 @@
 				}
 			}
 		},
-		"Idle3": {
+		"idle3": {
 			"loop": true,
 			"animation_length": 5,
 			"bones": {

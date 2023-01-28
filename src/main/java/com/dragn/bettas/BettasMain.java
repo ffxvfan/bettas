@@ -29,7 +29,7 @@ public class BettasMain
     public static final RegistryObject<EntityType<BettaEntity>> BETTA_ENTITY = ENTITY_TYPES.register("betta_entity",
             () -> EntityType.Builder.of(BettaEntity::new,
                     EntityClassification.WATER_CREATURE)
-                    .sized(1F, 1F)
+                    .sized(0.1F, 0.1F)
                     .build(new ResourceLocation(MODID, "betta").toString()));
 
     public BettasMain() {
