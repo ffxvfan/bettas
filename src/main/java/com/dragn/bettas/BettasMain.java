@@ -1,5 +1,6 @@
 package com.dragn.bettas;
 
+import com.dragn.bettas.init.BlockInit;
 import com.dragn.bettas.init.EntityInit;
 import com.dragn.bettas.init.ItemInit;
 import com.dragn.bettas.render.BettaRender;
@@ -25,6 +26,7 @@ public class BettasMain
         modEventBus.addListener(this::setup);
         EntityInit.ENTITY_TYPES.register(modEventBus);
         ItemInit.ITEMS.register(modEventBus);
+        BlockInit.BLOCKS.register(modEventBus);
 
         GeckoLib.initialize();
 
