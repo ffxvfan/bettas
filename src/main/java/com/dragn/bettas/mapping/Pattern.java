@@ -1,4 +1,4 @@
-package com.dragn.bettas.mappings;
+package com.dragn.bettas.mapping;
 
 import com.dragn.bettas.BettasMain;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +12,7 @@ public enum Pattern {
     WHITE_PASTEL(new ResourceLocation(BettasMain.MODID, "textures/entity/whitepastel.png"));
 
     public final ResourceLocation resourceLocation;
+
     Pattern(ResourceLocation resourceLocation) {
         this.resourceLocation = resourceLocation;
     }

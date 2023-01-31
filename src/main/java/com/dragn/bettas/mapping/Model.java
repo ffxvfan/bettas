@@ -1,4 +1,4 @@
-package com.dragn.bettas.mappings;
+package com.dragn.bettas.mapping;
 
 import com.dragn.bettas.BettasMain;
 import net.minecraft.util.ResourceLocation;

@@ -1,3 +1,5 @@
 {
-  "entity.bettas.betta_entity": "Betta Entity"
+  "item.bettas.betta_spawn_egg": "Betta Spawn Egg",
+  "entity.bettas.betta_entity": "Betta Entity",
+  "itemGroup.betta_tab": "DragN's Bettas and Aquatics"
 }

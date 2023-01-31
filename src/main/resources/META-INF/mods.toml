@@ -12,9 +12,9 @@ description='''
 
 '''
 [[dependencies.bettas]]
-    modId="forge" #mandatory
-    mandatory=true #mandatory
-    versionRange="[36,)" #mandatory
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.bettas]]
