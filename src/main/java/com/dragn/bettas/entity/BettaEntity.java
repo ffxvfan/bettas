@@ -1,8 +1,10 @@
 package com.dragn.bettas.entity;
 
+import com.dragn.bettas.init.ItemInit;
 import com.dragn.bettas.mapping.Model;
 import com.dragn.bettas.mapping.Pattern;
 import com.dragn.bettas.mapping.PatternManager;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
@@ -17,8 +19,10 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -30,6 +34,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
@@ -45,11 +50,8 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         this.noCulling = true;
     }
 
-    public static AttributeModifierMap setAttributes() {
-        return AnimalEntity.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 5F)
-                .add(Attributes.MOVEMENT_SPEED, 0.5F)
-                .build();
+    public static boolean checkFishSpawnRules(EntityType<? extends AbstractFishEntity> type, IWorld world, SpawnReason reason, BlockPos blockPos, Random random) {
+        return world.getBlockState(blockPos).is(Blocks.WATER) && world.getBlockState(blockPos.above()).is(Blocks.WATER) && random.nextFloat() > 0.90;
     }
 
     protected void registerGoals() {
@@ -58,7 +60,15 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
     @Override
     protected ItemStack getBucketItemStack() {
-        return null;
+        return ItemInit.BETTA_BUCKET.get().getDefaultInstance();
+    }
+
+    protected void saveToBucketTag(ItemStack itemStack) {
+        super.saveToBucketTag(itemStack);
+        CompoundNBT compoundNBT = itemStack.getOrCreateTag();
+        compoundNBT.putInt("Model", getModel());
+        compoundNBT.putInt("BasePattern", getBasePattern());
+        compoundNBT.putIntArray("ColorMap", getColorMap());
     }
 
     @Override
@@ -66,19 +76,23 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         return null;
     }
 
+    @Override
+    public int getMaxSpawnClusterSize() {
+        return 1;
+    }
+
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if(event.isMoving() && event.getController().getCurrentAnimation() == null) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
-        }
-        else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+        if(event.isMoving()) {
+            event.getController().setAnimation(new AnimationBuilder().loop("swim"));
+        } else {
+            event.getController().setAnimation(new AnimationBuilder().loop("idle"));
         }
         return PlayState.CONTINUE;
     }
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController<>(this, "controller", 8, this::predicate));
     }
 
     @Override
@@ -145,11 +159,16 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
     @Override
     public ILivingEntityData finalizeSpawn(IServerWorld serverWorld, DifficultyInstance difficultyInstance, SpawnReason spawnReason, @Nullable ILivingEntityData  livingEntityData, @Nullable CompoundNBT compoundNBT) {
-        Random r = new Random();
-        setModel(r.nextInt(Model.values().length));
-        setBasePattern(r.nextInt(Pattern.values().length));
-        setColorMap(PatternManager.generateMap());
-
+        if(compoundNBT.contains("Model") && compoundNBT.contains("BasePattern") && compoundNBT.contains("ColorMap")) {
+            setModel(compoundNBT.getInt("Model"));
+            setBasePattern(compoundNBT.getInt("BasePattern"));
+            setColorMap(compoundNBT.getIntArray("ColorMap"));
+        } else {
+            Random r = new Random();
+            setModel(r.nextInt(Model.values().length));
+            setBasePattern(r.nextInt(Pattern.values().length));
+            setColorMap(PatternManager.generateMap());
+        }
         return super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason, livingEntityData, compoundNBT);
     }
 

@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PatternManager {
 
@@ -69,13 +70,26 @@ public class PatternManager {
         }
     }
 
-    private static final int HEAD_C = 0xff0b0b0b;
-    private static final int HEAD_S = 0xff000000;
-    private static final int BODY_C = 0xff848484;
-    private static final int BODY_S = 0xff5d5d5d;
-    private static final int FIN_C  = 0xffdcdcdc;
-    private static final int FIN_S  = 0xffb1b1b1;
-    private static final int GALAXY = 0xff303030;
+    private static int pixelToIndex(int i) {
+        switch(i) {
+            case 0xff0b0b0b:
+                return 0;
+            case 0xff000000:
+                return 1;
+            case 0xff848484:
+                return 2;
+            case 0xff5d5d5d:
+                return 3;
+            case 0xffdcdcdc:
+                return 4;
+            case 0xffb1b1b1:
+                return 5;
+            case 0xff303030:
+                return 6;
+            default:
+                return -1;
+        }
+    }
 
     public static int[] generateMap() {
         int[] map = new int[7];
@@ -96,26 +110,5 @@ public class PatternManager {
         map[6] = palette.getRandomColor();
 
         return map;
-    }
-
-    private static int pixelToIndex(int i) {
-        switch(i) {
-            case HEAD_C:
-                return 0;
-            case HEAD_S:
-                return 1;
-            case BODY_S:
-                return 2;
-            case BODY_C:
-                return 3;
-            case FIN_S:
-                return 4;
-            case FIN_C:
-                return 5;
-            case GALAXY:
-                return 6;
-            default:
-                return -1;
-        }
     }
 }

@@ -1,5 +1,7 @@
 {
   "item.bettas.betta_spawn_egg": "Betta Spawn Egg",
+  "item.bettas.betta_bucket": "Betta Bucket",
   "entity.bettas.betta_entity": "Betta Entity",
-  "itemGroup.betta_tab": "DragN's Bettas and Aquatics"
+  "itemGroup.betta_tab": "\uD835\uDCD3ragN's Betta Fish Mod",
+  "block.bettas.store_tank": "Store Tank"
 }

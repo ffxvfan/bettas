@@ -14,8 +14,7 @@ public class EntityInit {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
 
     public static final RegistryObject<EntityType<BettaEntity>> BETTA_ENTITY = ENTITY_TYPES.register("betta_entity",
-            () -> EntityType.Builder.of(BettaEntity::new,
-                            EntityClassification.WATER_CREATURE)
-                    .sized(0.1F, 0.1F)
+            () -> EntityType.Builder.of(BettaEntity::new, EntityClassification.WATER_AMBIENT)
+                    .sized(0.3F, 0.125F)
                     .build(new ResourceLocation(MODID, "betta").toString()));
 }
