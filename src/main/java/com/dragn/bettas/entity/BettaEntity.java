@@ -4,13 +4,9 @@ import com.dragn.bettas.init.ItemInit;
 import com.dragn.bettas.mapping.Model;
 import com.dragn.bettas.mapping.Pattern;
 import com.dragn.bettas.mapping.PatternManager;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.fish.AbstractFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,14 +23,12 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
@@ -47,11 +41,16 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
     public BettaEntity(EntityType<? extends AbstractFishEntity> type, World world) {
         super(type, world);
-        this.noCulling = true;
     }
 
     public static boolean checkFishSpawnRules(EntityType<? extends AbstractFishEntity> type, IWorld world, SpawnReason reason, BlockPos blockPos, Random random) {
-        return world.getBlockState(blockPos).is(Blocks.WATER) && world.getBlockState(blockPos.above()).is(Blocks.WATER) && random.nextFloat() > 0.90;
+        return world.isWaterAt(blockPos) &&
+                world.isWaterAt(blockPos.above()) &&
+                world.isWaterAt(blockPos.below()) &&
+                world.isWaterAt(blockPos.north()) &&
+                world.isWaterAt(blockPos.east()) &&
+                world.isWaterAt(blockPos.south()) &&
+                world.isWaterAt(blockPos.west());
     }
 
     protected void registerGoals() {
@@ -159,7 +158,7 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
     @Override
     public ILivingEntityData finalizeSpawn(IServerWorld serverWorld, DifficultyInstance difficultyInstance, SpawnReason spawnReason, @Nullable ILivingEntityData  livingEntityData, @Nullable CompoundNBT compoundNBT) {
-        if(compoundNBT.contains("Model") && compoundNBT.contains("BasePattern") && compoundNBT.contains("ColorMap")) {
+        if(compoundNBT != null && compoundNBT.contains("Model") && compoundNBT.contains("BasePattern") && compoundNBT.contains("ColorMap")) {
             setModel(compoundNBT.getInt("Model"));
             setBasePattern(compoundNBT.getInt("BasePattern"));
             setColorMap(compoundNBT.getIntArray("ColorMap"));
