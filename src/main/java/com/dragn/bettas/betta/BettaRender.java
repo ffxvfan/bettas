@@ -1,7 +1,5 @@
-package com.dragn.bettas.render;
+package com.dragn.bettas.betta;
 
-import com.dragn.bettas.entity.BettaEntity;
-import com.dragn.bettas.model.BettaModel;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 

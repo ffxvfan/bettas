@@ -1,18 +1,20 @@
-package com.dragn.bettas.entity;
+package com.dragn.bettas.betta;
 
-import com.dragn.bettas.init.ItemInit;
-import com.dragn.bettas.mapping.Model;
-import com.dragn.bettas.mapping.Pattern;
-import com.dragn.bettas.mapping.PatternManager;
+import com.dragn.bettas.BettasMain;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.fish.AbstractFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -29,9 +31,14 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
+
+    private ResourceLocation textureLocation = null;
 
     private static final DataParameter<Integer> MODEL;
     private static final DataParameter<Integer> BASE_PATTERN;
@@ -53,13 +60,9 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
                 world.isWaterAt(blockPos.west());
     }
 
-    protected void registerGoals() {
-        super.registerGoals();
-    }
-
     @Override
     protected ItemStack getBucketItemStack() {
-        return ItemInit.BETTA_BUCKET.get().getDefaultInstance();
+        return BettasMain.BETTA_BUCKET.get().getDefaultInstance();
     }
 
     protected void saveToBucketTag(ItemStack itemStack) {
@@ -100,14 +103,37 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
     }
 
     public ResourceLocation getTextureLocation() {
-        return PatternManager.getTextureLocation(Pattern.patternFromOrdinal(getBasePattern()), getColorMap());
+        if(textureLocation == null) {
+            textureLocation = generateTexture(BasePattern.patternFromOrdinal(getBasePattern()), getColorMap());
+        }
+        return textureLocation;
     }
 
     /* INTERNAL DATA */
+
+    private static final IDataSerializer<int[]> COLOR_SERIALIZER = new IDataSerializer<int[]>() {
+        @Override
+        public void write(PacketBuffer buffer, int[] list) {
+            buffer.writeVarIntArray(list);
+        }
+
+        @Override
+        public int[] read(PacketBuffer buffer) {
+            return buffer.readVarIntArray();
+        }
+
+        @Override
+        public int[] copy(int[] list) {
+            return list;
+        }
+    };
+
     static {
+        DataSerializers.registerSerializer(COLOR_SERIALIZER);
+
         MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
         BASE_PATTERN = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
-        COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, PatternManager.COLOR_SERIALIZER);
+        COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, COLOR_SERIALIZER);
     }
 
     public int getModel() {
@@ -163,10 +189,9 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
             setBasePattern(compoundNBT.getInt("BasePattern"));
             setColorMap(compoundNBT.getIntArray("ColorMap"));
         } else {
-            Random r = new Random();
-            setModel(r.nextInt(Model.values().length));
-            setBasePattern(r.nextInt(Pattern.values().length));
-            setColorMap(PatternManager.generateMap());
+            setModel(BettasMain.RANDOM.nextInt(Model.values().length));
+            setBasePattern(BettasMain.RANDOM.nextInt(BasePattern.values().length));
+            setColorMap(generateMap());
         }
         return super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason, livingEntityData, compoundNBT);
     }
@@ -177,5 +202,71 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         this.entityData.define(MODEL, 0);
         this.entityData.define(BASE_PATTERN, 0);
         this.entityData.define(COLOR_MAP, new int[7]);
+    }
+
+    private static ResourceLocation generateTexture(BasePattern basePattern, int[] map) {
+        try {
+            return Minecraft.getInstance().textureManager.register(String.valueOf(Arrays.hashCode(map)), new DynamicTexture(NativeImage.read(
+                    Minecraft.getInstance().getResourceManager().getResource(basePattern.resourceLocation).getInputStream()
+            )) {
+                @Override
+                public void upload() {
+                    this.bind();
+                    for(int x = 0; x < getPixels().getWidth(); x++) {
+                        for(int y = 0; y < getPixels().getHeight(); y++) {
+                            int index = pixelToIndex(getPixels().getPixelRGBA(x, y));
+                            if(index != -1) {
+                                getPixels().setPixelRGBA(x, y, map[index]);
+                            }
+                        }
+                    }
+                    getPixels().upload(0, 0, 0, false);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static int pixelToIndex(int i) {
+        switch(i) {
+            case 0xff0b0b0b:
+                return 0;
+            case 0xff000000:
+                return 1;
+            case 0xff848484:
+                return 2;
+            case 0xff5d5d5d:
+                return 3;
+            case 0xffdcdcdc:
+                return 4;
+            case 0xffb1b1b1:
+                return 5;
+            case 0xff303030:
+                return 6;
+            default:
+                return -1;
+        }
+    }
+
+    private static int[] generateMap() {
+        int[] map = new int[7];
+
+        Palette palette = Palette.getRandomPalette();
+        map[0] = palette.getRandomColor();
+        map[1] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[2] = palette.getRandomColor();
+        map[3] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[4] = palette.getRandomColor();
+        map[5] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[6] = palette.getRandomColor();
+
+        return map;
     }
 }

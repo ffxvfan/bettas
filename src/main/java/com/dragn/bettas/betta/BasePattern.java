@@ -1,9 +1,9 @@
-package com.dragn.bettas.mapping;
+package com.dragn.bettas.betta;
 
 import com.dragn.bettas.BettasMain;
 import net.minecraft.util.ResourceLocation;
 
-public enum Pattern {
+public enum BasePattern {
     CLASSIC(new ResourceLocation(BettasMain.MODID, "textures/entity/classic.png")),
     FADE(new ResourceLocation(BettasMain.MODID, "textures/entity/fade.png")),
     GALAXY_KOI(new ResourceLocation(BettasMain.MODID, "textures/entity/galaxykoi.png")),
@@ -13,11 +13,11 @@ public enum Pattern {
 
     public final ResourceLocation resourceLocation;
 
-    Pattern(ResourceLocation resourceLocation) {
+    BasePattern(ResourceLocation resourceLocation) {
         this.resourceLocation = resourceLocation;
     }
 
-    public static Pattern patternFromOrdinal(int pattern) {
-        return Pattern.values()[pattern % Pattern.values().length];
+    public static BasePattern patternFromOrdinal(int pattern) {
+        return BasePattern.values()[pattern % BasePattern.values().length];
     }
 }

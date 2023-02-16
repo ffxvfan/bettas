@@ -1,8 +1,6 @@
-package com.dragn.bettas.model;
+package com.dragn.bettas.betta;
 
 import com.dragn.bettas.BettasMain;
-import com.dragn.bettas.entity.BettaEntity;
-import com.dragn.bettas.mapping.Model;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 

@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "bettas:betta_bowl"
+    },
+    "title": "You first Betta",
+    "description": "Bowl your first Betta",
+    "background": "minecraft:water",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:filled_bucket",
+      "conditions": {
+        "item": {
+          "item": "bettas:betta_bowl"
+        }
+      }
+    }
+  },
+  "rewards": {
+    "loot": [
+      "bettas:items/betta_bowl"
+    ],
+    "experience": 50
+  }
+}

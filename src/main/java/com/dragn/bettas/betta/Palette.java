@@ -1,4 +1,4 @@
-package com.dragn.bettas.mapping;
+package com.dragn.bettas.betta;
 
 import java.util.Random;
 

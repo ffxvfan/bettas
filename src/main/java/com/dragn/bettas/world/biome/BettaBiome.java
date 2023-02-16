@@ -1,7 +1,6 @@
 package com.dragn.bettas.world.biome;
 
 import com.dragn.bettas.BettasMain;
-import com.dragn.bettas.init.EntityInit;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.biome.*;
@@ -41,7 +40,7 @@ public class BettaBiome {
                 .addSpawn(EntityClassification.CREATURE, new MobSpawnInfo.Spawners(EntityType.CHICKEN, 10, 4, 4))
                 .addSpawn(EntityClassification.CREATURE, new MobSpawnInfo.Spawners(EntityType.COW, 8, 4, 4))
                 .addSpawn(EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(EntityType.BAT, 10, 8, 8))
-                .addSpawn(EntityClassification.WATER_AMBIENT, new MobSpawnInfo.Spawners(EntityInit.BETTA_ENTITY.get(), 1, 1, 2));
+                .addSpawn(EntityClassification.WATER_AMBIENT, new MobSpawnInfo.Spawners(BettasMain.BETTA_ENTITY.get(), 1, 1, 2));
 
         BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder()
                 .surfaceBuilder(surfaceBuilderSupplier)
