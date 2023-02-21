@@ -38,7 +38,7 @@ import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
-    private ResourceLocation textureLocation = null;
+    private ResourceLocation textureLocation = null; // cached texture; populated at runtime
 
     private static final DataParameter<Integer> MODEL;
     private static final DataParameter<Integer> BASE_PATTERN;
@@ -109,8 +109,8 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         return textureLocation;
     }
 
-    /* INTERNAL DATA */
 
+    /* INTERNAL DATA GENERATION */
     private static final IDataSerializer<int[]> COLOR_SERIALIZER = new IDataSerializer<int[]>() {
         @Override
         public void write(PacketBuffer buffer, int[] list) {
@@ -214,9 +214,28 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
                     this.bind();
                     for(int x = 0; x < getPixels().getWidth(); x++) {
                         for(int y = 0; y < getPixels().getHeight(); y++) {
-                            int index = pixelToIndex(getPixels().getPixelRGBA(x, y));
-                            if(index != -1) {
-                                getPixels().setPixelRGBA(x, y, map[index]);
+                            switch(getPixels().getPixelRGBA(x, y)) {
+                                case 0xff0b0b0b:
+                                    getPixels().setPixelRGBA(x, y, map[0]);
+                                    break;
+                                case 0xff000000:
+                                    getPixels().setPixelRGBA(x, y, map[1]);
+                                    break;
+                                case 0xff848484:
+                                    getPixels().setPixelRGBA(x, y, map[2]);
+                                    break;
+                                case 0xff5d5d5d:
+                                    getPixels().setPixelRGBA(x, y, map[3]);
+                                    break;
+                                case 0xffdcdcdc:
+                                    getPixels().setPixelRGBA(x, y, map[4]);
+                                    break;
+                                case 0xffb1b1b1:
+                                    getPixels().setPixelRGBA(x, y, map[5]);
+                                    break;
+                                case 0xff303030:
+                                    getPixels().setPixelRGBA(x, y, map[6]);
+                                    break;
                             }
                         }
                     }
@@ -225,27 +244,6 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static int pixelToIndex(int i) {
-        switch(i) {
-            case 0xff0b0b0b:
-                return 0;
-            case 0xff000000:
-                return 1;
-            case 0xff848484:
-                return 2;
-            case 0xff5d5d5d:
-                return 3;
-            case 0xffdcdcdc:
-                return 4;
-            case 0xffb1b1b1:
-                return 5;
-            case 0xff303030:
-                return 6;
-            default:
-                return -1;
         }
     }
 

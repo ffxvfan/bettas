@@ -1,19 +1,7 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "bettas:block/tank",
-      "y": 90
-    },
-    "facing=north": {
+    "": {
       "model": "bettas:block/tank"
-    },
-    "facing=south": {
-      "model": "bettas:block/tank",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "bettas:block/tank",
-      "y": 270
     }
   }
 }

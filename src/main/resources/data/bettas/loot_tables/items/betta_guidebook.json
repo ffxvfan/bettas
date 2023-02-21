@@ -1,12 +1,12 @@
 {
-  "type": "minecraft:item",
+  "type": "minecraft:advancement_reward",
   "pools": [
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "bettas:betta_guidebook"
+          "name": "bettas:item/betta_guidebook"
         }
       ]
     }

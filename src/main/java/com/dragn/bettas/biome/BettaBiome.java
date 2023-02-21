@@ -1,4 +1,4 @@
-package com.dragn.bettas.world.biome;
+package com.dragn.bettas.biome;
 
 import com.dragn.bettas.BettasMain;
 import net.minecraft.entity.EntityClassification;
@@ -80,7 +80,6 @@ public class BettaBiome {
                 .addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, Features.SPRING_LAVA)
                 .addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, Features.SEAGRASS_SWAMP)
                 .addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION, Features.FREEZE_TOP_LAYER);
-
 
         BiomeAmbience.Builder biomeAmbienceBuilder = new BiomeAmbience.Builder()
                 .waterColor(8709850)

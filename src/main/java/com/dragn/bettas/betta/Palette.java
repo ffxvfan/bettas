@@ -1,6 +1,6 @@
 package com.dragn.bettas.betta;
 
-import java.util.Random;
+import com.dragn.bettas.BettasMain;
 
 public enum Palette {
     BLUES(
@@ -36,8 +36,6 @@ public enum Palette {
             new int[]{0xff202223, 0xffcfcfce, 0xe5000000, 0xc6000000, 0x23000000}
     );
 
-    private static final Random r = new Random();
-
     private final int[] colors;
     private final int[] shades;
 
@@ -47,14 +45,14 @@ public enum Palette {
     }
 
     public static Palette getRandomPalette() {
-        return Palette.values()[r.nextInt(Palette.values().length)];
+        return Palette.values()[BettasMain.RANDOM.nextInt(Palette.values().length)];
     }
 
     public int getRandomColor() {
-        return colors[r.nextInt(colors.length)];
+        return colors[BettasMain.RANDOM.nextInt(colors.length)];
     }
 
     public int getRandomShade() {
-        return colors[r.nextInt(shades.length)];
+        return colors[BettasMain.RANDOM.nextInt(shades.length)];
     }
 }

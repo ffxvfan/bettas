@@ -1,27 +1,26 @@
 package com.dragn.bettas;
 
 import com.dragn.bettas.betta.BettaEntity;
+import com.dragn.bettas.block.Substrate;
 import com.dragn.bettas.block.Tank;
-import com.dragn.bettas.guide.BettaGuideBook;
 import com.dragn.bettas.item.BettaBowl;
-import com.dragn.bettas.network.BettaNetwork;
-import com.dragn.bettas.world.biome.BettaBiome;
+import com.dragn.bettas.biome.BettaBiome;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.*;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -44,7 +43,7 @@ public class BettasMain {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BettasMain.MODID);
 
 
-    /* BETTA INV TAB */
+    /* BETTA INVENTORY TAB TAB */
     public static final ItemGroup BETTAS_TAB = new ItemGroup("betta_tab") {
         @Override
         public ItemStack makeIcon() {
@@ -61,8 +60,9 @@ public class BettasMain {
 
 
     /* BETTA BLOCKS */
-    public static final RegistryObject<Block> TANK = BLOCKS.register("tank",
-            () -> new Tank(AbstractBlock.Properties.of(Material.GLASS).noOcclusion()));
+    public static final RegistryObject<Block> TANK = BLOCKS.register("tank", Tank::new);
+
+    public static final RegistryObject<Block> SUBSTRATE = BLOCKS.register("substrate", Substrate::new);
 
 
     /* BETTA ITEMS */
@@ -75,8 +75,9 @@ public class BettasMain {
     public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank_item",
             () -> new BlockItem(TANK.get(), new Item.Properties().tab(BETTAS_TAB)));
 
-    public static final RegistryObject<Item> BETTA_GUIDEBOOK = ITEMS.register("betta_guidebook",
-            () -> new BettaGuideBook(new Item.Properties().tab(BETTAS_TAB)));
+    public static final RegistryObject<Item> SUBSTRATE_ITEM = ITEMS.register("substrate_item",
+            () -> new BlockItem(SUBSTRATE.get(), new Item.Properties().tab(BETTAS_TAB)));
+
 
     public BettasMain() {
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -88,14 +89,6 @@ public class BettasMain {
 
         GeckoLib.initialize();
 
-
-        modEventBus.addListener(this::setup);
-
-
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    public void setup(FMLCommonSetupEvent event) {
-        BettaNetwork.init();
     }
 }
