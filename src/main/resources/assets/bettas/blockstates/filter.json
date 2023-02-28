@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bettas:block/filter",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bettas:block/filter"
+    },
+    "facing=south": {
+      "model": "bettas:block/filter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bettas:block/filter",
+      "y": 270
+    }
+  }
+}

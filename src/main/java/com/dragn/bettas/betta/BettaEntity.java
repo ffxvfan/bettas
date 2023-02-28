@@ -33,7 +33,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {

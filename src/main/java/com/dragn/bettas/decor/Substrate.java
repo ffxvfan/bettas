@@ -1,16 +1,13 @@
-package com.dragn.bettas.block;
+package com.dragn.bettas.decor;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
-
-import java.util.List;
 
 public class Substrate extends Block {
 
@@ -18,10 +15,5 @@ public class Substrate extends Block {
 
     public Substrate() {
         super(AbstractBlock.Properties.of(Material.SAND).noOcclusion());
-    }
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader iBlockReader, BlockPos pos, ISelectionContext context) {
-        return SHAPE;
     }
 }

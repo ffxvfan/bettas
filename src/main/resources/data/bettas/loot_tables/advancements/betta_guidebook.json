@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:advancement_reward",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:written_book",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{pages:['[\"\",{\"text\":\"\u0020\u0020\u0020\",\"bold\":true},{\"text\":\"Betta Guide\",\"bold\":true,\"underlined\":true},{\"text\":\"\n\nCongratulations, you\u2019ve bowled a betta! I hope you have the tools to keep your new friend happy and healthy.\n\nOh, you don\u2019t yet\u2026? Well, that\u2019s okay. I can help you out!\",\"color\":\"reset\"}]','[\"\",{\"text\":\"Betta Requirements\",\"bold\":true,\"underlined\":true},{\"text\":\"\n\n-\",\"color\":\"reset\"},{\"text\":\"Tank\",\"bold\":true},{\"text\":\"\n\n-\",\"color\":\"reset\"},{\"text\":\"Substrate\",\"bold\":true},{\"text\":\"\n\n-\",\"color\":\"reset\"},{\"text\":\"Filter\",\"bold\":true},{\"text\":\" \n\n-\",\"color\":\"reset\"},{\"text\":\"Heater\",\"bold\":true}]','{\"text\":\"You probably know that you can\u2019t keep your little buddy in a bowl forever. You\u2019ll need to set up a nice tank for him/her!\n\nThe recommended long-term size for a tank is 2x1, but you can go as big as you want!\"}','{\"text\":\"If you\u2019re running a shop, you can safely do a 1x1 tank as long as you know your bettas won\u2019t be there forever. \n\nAfter you set up the tank, make sure to add in a filter and a heater to keep the water at healthy levels for your betta.\"}','[\"\",{\"text\":\" \u0020 \u0020 \u0020 \u0020\"},{\"text\":\"Decor\",\"bold\":true,\"underlined\":true},{\"text\":\"\n\nAfter adding your required items, you can then add decor. Place some sand in the tank first for substrate!\n\nSimply right-click your tank with your desired decorations to build up your decor.\",\"color\":\"reset\"}]'],title:\"Betta Guide\",author:DragN}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

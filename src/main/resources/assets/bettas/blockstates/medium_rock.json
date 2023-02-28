@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bettas:block/medium_rock",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bettas:block/medium_rock"
+    },
+    "facing=south": {
+      "model": "bettas:block/medium_rock",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bettas:block/medium_rock",
+      "y": 270
+    }
+  }
+}

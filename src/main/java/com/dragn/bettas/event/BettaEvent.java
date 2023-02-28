@@ -5,23 +5,18 @@ import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.betta.BettaRender;
 import com.dragn.bettas.biome.BettaBiome;
-import com.dragn.bettas.block.TankModel;
-import com.dragn.bettas.block.TankModelLoader;
+import com.dragn.bettas.tank.TankTileRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.SimpleBakedModel;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -64,16 +59,9 @@ public class BettaEvent {
                 EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 BettaEntity::checkFishSpawnRules);
-    }
 
-    @SubscribeEvent
-    public static void modelRegistryEvent(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(BettasMain.MODID, "tank_model_loader"),
-                ModelLoaderRegistry.VanillaProxy.Loader.INSTANCE);
-    }
 
-    @SubscribeEvent
-    public static void modelBakeEvent(ModelBakeEvent event) {
-        event.getModelRegistry().put(new ResourceLocation(BettasMain.MODID, "tank_model"), new TankModel());
+        /* REGISTER TANK TILE ENTITY*/
+        ClientRegistry.bindTileEntityRenderer(BettasMain.TANK_TILE.get(), TankTileRenderer::new);
     }
 }

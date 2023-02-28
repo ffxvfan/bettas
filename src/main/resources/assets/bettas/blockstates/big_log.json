@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "bettas:block/big_log",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "bettas:block/big_log"
+    },
+    "facing=south": {
+      "model": "bettas:block/big_log",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "bettas:block/big_log",
+      "y": 270
+    }
+  }
+}
