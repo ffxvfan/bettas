@@ -2,46 +2,39 @@
   "multipart": [
     {
       "apply": {
-        "model": "bettas:block/tank"
+        "model": "bettas:block/tank_base"
       }
     },
     {
       "when": {
-        "north": "true"
+        "north": "false"
       },
       "apply": {
-        "model": "minecraft:block/acacia_fence_side",
-        "uvlock": true
+        "model": "bettas:block/tank_side_north"
       }
     },
     {
       "when": {
-        "east": "true"
+        "east": "false"
       },
       "apply": {
-        "model": "minecraft:block/acacia_fence_side",
-        "y": 90,
-        "uvlock": true
+        "model": "bettas:block/tank_side_east"
       }
     },
     {
       "when": {
-        "south": "true"
+        "south": "false"
       },
       "apply": {
-        "model": "minecraft:block/acacia_fence_side",
-        "y": 180,
-        "uvlock": true
+        "model": "bettas:block/tank_side_south"
       }
     },
     {
       "when": {
-        "west": "true"
+        "west": "false"
       },
       "apply": {
-        "model": "minecraft:block/acacia_fence_side",
-        "y": 270,
-        "uvlock": true
+        "model": "bettas:block/tank_side_west"
       }
     }
   ]

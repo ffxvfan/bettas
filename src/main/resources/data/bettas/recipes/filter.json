@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BB ",
+    "AA ",
+    "AA "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:iron_nugget"
+    }
+
+  },
+  "result": {
+    "item": "bettas:filter_item",
+    "count": 1
+  }
+}

@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "bettas:item/filter_item",
-    "particle": "bettas:item/filter_item"
+    "0": "bettas:item/filter",
+    "particle": "bettas:item/filter"
   },
   "elements": [
     {

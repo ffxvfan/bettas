@@ -7,7 +7,6 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.fish.AbstractFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -52,6 +51,27 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
                 world.isWaterAt(blockPos.east()) &&
                 world.isWaterAt(blockPos.south()) &&
                 world.isWaterAt(blockPos.west());
+    }
+
+    public static int[] generateMap() {
+        int[] map = new int[7];
+
+        Palette palette = Palette.getRandomPalette();
+        map[0] = palette.getRandomColor();
+        map[1] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[2] = palette.getRandomColor();
+        map[3] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[4] = palette.getRandomColor();
+        map[5] = palette.getRandomShade();
+
+        palette = Palette.getRandomPalette();
+        map[6] = palette.getRandomColor();
+
+        return map;
     }
 
     @Override
@@ -103,31 +123,10 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         return textureLocation;
     }
 
-
-    /* INTERNAL DATA GENERATION */
-    private static final IDataSerializer<int[]> COLOR_SERIALIZER = new IDataSerializer<int[]>() {
-        @Override
-        public void write(PacketBuffer buffer, int[] list) {
-            buffer.writeVarIntArray(list);
-        }
-
-        @Override
-        public int[] read(PacketBuffer buffer) {
-            return buffer.readVarIntArray();
-        }
-
-        @Override
-        public int[] copy(int[] list) {
-            return list;
-        }
-    };
-
     static {
-        DataSerializers.registerSerializer(COLOR_SERIALIZER);
-
         MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
         BASE_PATTERN = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
-        COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, COLOR_SERIALIZER);
+        COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, (IDataSerializer<int[]>)BettasMain.COLOR_SERIALIZER.get().getSerializer());
     }
 
     public int getModel() {
@@ -185,7 +184,7 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         } else {
             setModel(BettasMain.RANDOM.nextInt(Model.values().length));
             setBasePattern(BettasMain.RANDOM.nextInt(BasePattern.values().length));
-            setColorMap(TextureGen.generateMap());
+            setColorMap(generateMap());
         }
         return super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason, livingEntityData, compoundNBT);
     }

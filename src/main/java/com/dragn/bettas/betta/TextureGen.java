@@ -53,25 +53,4 @@ public class TextureGen {
             throw new RuntimeException(e);
         }
     }
-
-    public static int[] generateMap() {
-        int[] map = new int[7];
-
-        Palette palette = Palette.getRandomPalette();
-        map[0] = palette.getRandomColor();
-        map[1] = palette.getRandomShade();
-
-        palette = Palette.getRandomPalette();
-        map[2] = palette.getRandomColor();
-        map[3] = palette.getRandomShade();
-
-        palette = Palette.getRandomPalette();
-        map[4] = palette.getRandomColor();
-        map[5] = palette.getRandomShade();
-
-        palette = Palette.getRandomPalette();
-        map[6] = palette.getRandomColor();
-
-        return map;
-    }
 }

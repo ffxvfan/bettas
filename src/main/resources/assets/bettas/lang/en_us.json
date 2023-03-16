@@ -1,13 +1,6 @@
 {
   "item.bettas.betta_spawn_egg": "Betta Spawn Egg",
   "item.bettas.betta_bucket": "Betta Bucket",
-  "item.bettas.filter_item": "Filter",
-  "item.bettas.heater_item": "Heater",
-  "item.bettas.small_log_item": "Small Log",
-  "item.bettas.big_log_item": "Big Log",
-  "item.bettas.small_rock_item": "Small Rock",
-  "item.bettas.medium_rock_item": "Medium Rock",
-  "item.bettas.large_rock_item": "Large Rock",
   "entity.bettas.betta": "Betta Fish",
   "itemGroup.betta_tab": "DragN's Betta Fish Mod",
   "block.bettas.tank": "Tank",
@@ -17,5 +10,5 @@
   "block.bettas.big_log": "Big Log",
   "block.bettas.small_rock": "Small Rock",
   "block.bettas.medium_rock": "Medium Rock",
-  "block.bettas.large_log": "Large Rock"
+  "block.bettas.large_rock": "Large Rock"
 }

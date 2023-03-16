@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "bettas:item/heater_item",
-    "particle": "bettas:item/heater_item"
+    "0": "bettas:item/heater",
+    "particle": "bettas:item/heater"
   },
   "elements": [
     {
