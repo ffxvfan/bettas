@@ -2,19 +2,24 @@ package com.dragn.bettas.tank;
 
 import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.decor.Decor;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Stack;
 
 public class TankTile extends TileEntity implements ITickableTileEntity {
 
-    public final Stack<Decor> decor = new Stack<>();
+    public LinkedHashMap<String, Direction> decor = new LinkedHashMap<>();
 
     public TankTile() {
         super(BettasMain.TANK_TILE.get());
@@ -23,10 +28,7 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     @Override
     public CompoundNBT save(CompoundNBT compoundNBT) {
         CompoundNBT decorNBT = new CompoundNBT();
-        while(!decor.empty()) {
-            Decor d = decor.pop();
-            decorNBT.putInt(d.name, d.getFacing());
-        }
+        decor.forEach((name, direction) -> decorNBT.putInt(name, direction.ordinal()));
         compoundNBT.put("decor", decorNBT);
         return super.save(compoundNBT);
     }
@@ -35,8 +37,7 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public void load(BlockState state, CompoundNBT compoundNBT) {
         CompoundNBT decorNBT = compoundNBT.getCompound("decor");
         for(String decorName : decorNBT.getAllKeys()) {
-            Decor d = new Decor(decorName, decorNBT.getInt(decorName));
-            decor.push(d);
+            decor.put(decorName, Direction.values()[decorNBT.getInt(decorName)]);
         }
         super.load(state, compoundNBT);
     }
@@ -45,15 +46,10 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT decorNBT = new CompoundNBT();
-        while(!decor.empty()) {
-            Decor d = decor.pop();
-            decorNBT.putInt(d.name, d.getFacing());
-        }
-
+        decor.forEach((name, direction) -> decorNBT.putInt(name, direction.ordinal()));
         CompoundNBT compoundNBT = new CompoundNBT();
         compoundNBT.put("decor", decorNBT);
         return new SUpdateTileEntityPacket(worldPosition, -1, compoundNBT);
-
     }
 
     @Override
@@ -62,13 +58,16 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
         CompoundNBT decorNBT = compoundNBT.getCompound("decor");
         for(String decorName : decorNBT.getAllKeys()) {
-            Decor d = new Decor(decorName, decorNBT.getInt(decorName));
-            decor.push(d);
+            decor.put(decorName, Direction.values()[decorNBT.getInt(decorName)]);
         }
     }
 
+
+
     @Override
     public void tick() {
-
+        if(!level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 }

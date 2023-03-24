@@ -1,17 +1,20 @@
 package com.dragn.bettas.tank;
 
 import com.dragn.bettas.BettasMain;
-import com.dragn.bettas.decor.Decor;
+import com.dragn.bettas.network.NetworkManager;
+import com.dragn.bettas.network.TankUpdateRequest;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -28,11 +31,11 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.RegistryObject;
-import org.lwjgl.system.CallbackI;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
+import java.util.*;
 
 public class Tank extends Block implements IWaterLoggable {
 
@@ -111,15 +114,38 @@ public class Tank extends Block implements IWaterLoggable {
     }
 
     @Override
+    public void onRemove(BlockState state1, World world, BlockPos pos, BlockState state2, boolean b) {
+        for(Map.Entry<String, Direction> decor : ((TankTile)world.getBlockEntity(pos)).decor.entrySet()) {
+            world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, BettasMain.DECOR_MAP.get(decor.getKey()).get().asItem().getDefaultInstance()));
+        }
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        return Collections.singletonList(this.asItem().getDefaultInstance());
+    }
+
+    @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTraceResult) {
         if(!world.isClientSide) {
-            String itemName = player.getItemInHand(hand).getItem().getRegistryName().getPath();
             TankTile tankTile = (TankTile) world.getBlockEntity(pos);
+            String itemName = player.getItemInHand(hand).getItem().getRegistryName().getPath();
 
-            if(Decor.PROPERTY_MAP.get(itemName) != null) {
-                Decor decor = new Decor(itemName, player.getDirection().getOpposite().ordinal());
-                tankTile.decor.push(decor);
-                world.sendBlockUpdated(pos, state, state, -1);
+            if(BettasMain.DECOR_MAP.get(itemName) != null) {
+                if(tankTile.decor.put(itemName, player.getDirection().getCounterClockWise()) == null) {
+                    player.getItemInHand(hand).shrink(1);
+                }
+                world.sendBlockUpdated(pos, state, state, 3);
+                return ActionResultType.CONSUME;
+            }
+
+            if(tankTile.decor.size() > 0) {
+                Map.Entry<String, Direction> decor = (Map.Entry<String, Direction>) tankTile.decor.entrySet().toArray()[tankTile.decor.size() - 1];
+                tankTile.decor.remove(decor.getKey());
+                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, BettasMain.DECOR_MAP.get(decor.getKey()).get().asItem().getDefaultInstance()));
+
+                NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> (Chunk) world.getChunk(pos)), new TankUpdateRequest(decor.getKey(), pos));
+                return ActionResultType.SUCCESS;
             }
         }
         return super.use(state, world, pos, player, hand, blockRayTraceResult);

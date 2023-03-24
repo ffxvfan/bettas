@@ -40,7 +40,7 @@ public class BettaBiome {
                 .addSpawn(EntityClassification.CREATURE, new MobSpawnInfo.Spawners(EntityType.CHICKEN, 10, 4, 4))
                 .addSpawn(EntityClassification.CREATURE, new MobSpawnInfo.Spawners(EntityType.COW, 8, 4, 4))
                 .addSpawn(EntityClassification.AMBIENT, new MobSpawnInfo.Spawners(EntityType.BAT, 10, 8, 8))
-                .addSpawn(EntityClassification.WATER_AMBIENT, new MobSpawnInfo.Spawners(BettasMain.BETTA_ENTITY.get(), 1, 1, 2));
+                .addSpawn(EntityClassification.WATER_AMBIENT, new MobSpawnInfo.Spawners(BettasMain.BETTA_ENTITY.get(), 15, 1, 2));
 
         BiomeGenerationSettings.Builder biomeGenerationSettingsBuilder = new BiomeGenerationSettings.Builder()
                 .surfaceBuilder(surfaceBuilderSupplier)
