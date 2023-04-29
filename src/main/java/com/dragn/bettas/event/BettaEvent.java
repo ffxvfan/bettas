@@ -5,6 +5,8 @@ import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.betta.BettaRender;
 import com.dragn.bettas.biome.BettaBiome;
+import com.dragn.bettas.snail.SnailEntity;
+import com.dragn.bettas.snail.SnailRender;
 import com.dragn.bettas.tank.TankTileRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -32,13 +34,15 @@ public class BettaEvent {
     @SubscribeEvent
     public static void entityAttrbiuteCreationEvent(EntityAttributeCreationEvent event) {
         event.put(BettasMain.BETTA_ENTITY.get(), BettaEntity.createAttributes().build());
+        event.put(BettasMain.SNAIL_ENTITY.get(), SnailEntity.createAttributes().build());
     }
 
     @SubscribeEvent
     public static void clientSetupEvent(FMLClientSetupEvent event) {
 
-        /* REGISTER BETTA RENDERER */
+        /* REGISTER RENDERERS */
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.BETTA_ENTITY.get(), BettaRender::new);
+        RenderingRegistry.registerEntityRenderingHandler(BettasMain.SNAIL_ENTITY.get(), SnailRender::new);
 
 
         /* REGISTER TANK RENDERER */
@@ -59,6 +63,13 @@ public class BettaEvent {
                 EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 BettaEntity::checkFishSpawnRules);
+
+        EntitySpawnPlacementRegistry.register(
+                BettasMain.SNAIL_ENTITY.get(),
+                EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                SnailEntity::checkSnailSpawnRules
+        );
 
 
         /* REGISTER TANK TILE ENTITY*/

@@ -1,15 +1,15 @@
 modLoader="javafml"
 loaderVersion="[36,)"
-license="who cares"
+license="All Rights Reserved"
 [[mods]]
 modId="bettas"
-version="${file.jarVersion}"
-displayName="𝓓ragN's Betta Fish Mod"
-logoFile="replaceme.png"
-credits=""
-authors="𝓓ragN, EvangeliX"
+version="${1.16.5-1.0}"
+displayName="DragN's Bettas"
+logoFile="temp.png"
+credits="EvangeliX, Coder. DragN0007, Artwork."
+authors="DragN0007, EvangeliX"
 description='''
-
+Bettas is a small mod that aims to add cute betta fish to your game. Find the betta biome and browse through over 3400 betta types for your perfect color and pattern scheme for your new aquarium!
 '''
 [[dependencies.bettas]]
     modId="forge"

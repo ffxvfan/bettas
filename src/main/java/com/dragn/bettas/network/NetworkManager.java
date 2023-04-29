@@ -15,6 +15,6 @@ public class NetworkManager {
     );
 
     public static void init() {
-        INSTANCE.registerMessage(0, TankUpdateRequest.class, TankUpdateRequest::encode, TankUpdateRequest::decode, TankUpdateRequest::handle);
+        INSTANCE.registerMessage(0, RemoveDecorRequest.class, RemoveDecorRequest::encode, RemoveDecorRequest::decode, RemoveDecorRequest::handle);
     }
 }

@@ -2,18 +2,19 @@ package com.dragn.bettas.tank;
 
 import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.network.NetworkManager;
-import com.dragn.bettas.network.TankUpdateRequest;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
+import com.dragn.bettas.network.RemoveDecorRequest;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.FishBucketItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.loot.LootContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -51,6 +52,8 @@ public class Tank extends Block implements IWaterLoggable {
     private final VoxelShape EAST_B = Block.box(15.75, 0.25, 0, 16, 16.25, 16);
     private final VoxelShape NORTH_B = Block.box(0.25, 0.25, 0, 15.75, 16.25, 0.25);
     private final VoxelShape SOUTH_B = Block.box(0.25, 0.25, 15.75, 15.75, 16.25, 16);
+
+    private static final ArrayList<String> DECOR_ITEMS = new ArrayList<>(Arrays.asList("big_log_item", "filter_item", "heater_item", "large_rock_item", "medium_rock_item", "small_log_item", "small_rock_item", "kelp", "seagrass", "sand"));
 
     public Tank() {
         super(AbstractBlock.Properties.of(Material.GLASS).noOcclusion().strength(0.7F));
@@ -114,13 +117,6 @@ public class Tank extends Block implements IWaterLoggable {
     }
 
     @Override
-    public void onRemove(BlockState state1, World world, BlockPos pos, BlockState state2, boolean b) {
-        for(Map.Entry<String, Direction> decor : ((TankTile)world.getBlockEntity(pos)).decor.entrySet()) {
-            world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, BettasMain.DECOR_MAP.get(decor.getKey()).get().asItem().getDefaultInstance()));
-        }
-    }
-
-    @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         return Collections.singletonList(this.asItem().getDefaultInstance());
     }
@@ -128,27 +124,53 @@ public class Tank extends Block implements IWaterLoggable {
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTraceResult) {
         if(!world.isClientSide) {
+            String name = player.getItemInHand(hand).getItem().getRegistryName().getPath();
             TankTile tankTile = (TankTile) world.getBlockEntity(pos);
-            String itemName = player.getItemInHand(hand).getItem().getRegistryName().getPath();
 
-            if(BettasMain.DECOR_MAP.get(itemName) != null) {
-                if(tankTile.decor.put(itemName, player.getDirection().getCounterClockWise()) == null) {
+            if(DECOR_ITEMS.contains(name)) {
+                if(tankTile.decor.put(name, player.getDirection().getCounterClockWise()) == null) {
                     player.getItemInHand(hand).shrink(1);
                 }
                 world.sendBlockUpdated(pos, state, state, 3);
                 return ActionResultType.CONSUME;
-            }
-
-            if(tankTile.decor.size() > 0) {
+            } else if(hand == Hand.MAIN_HAND && name.equals("air") && tankTile.decor.size() > 0) {
                 Map.Entry<String, Direction> decor = (Map.Entry<String, Direction>) tankTile.decor.entrySet().toArray()[tankTile.decor.size() - 1];
                 tankTile.decor.remove(decor.getKey());
-                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, BettasMain.DECOR_MAP.get(decor.getKey()).get().asItem().getDefaultInstance()));
+                NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> (Chunk) world.getChunk(pos)), new RemoveDecorRequest(decor.getKey(), pos));
+                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, decorMap(decor.getKey())));
 
-                NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> (Chunk) world.getChunk(pos)), new TankUpdateRequest(decor.getKey(), pos));
+                world.sendBlockUpdated(pos, state, state, 3);
                 return ActionResultType.SUCCESS;
             }
         }
         return super.use(state, world, pos, player, hand, blockRayTraceResult);
+    }
+
+    public static ItemStack decorMap(String decor) {
+        switch(decor) {
+            case "big_log_item":
+                return BettasMain.BIG_LOG_ITEM.get().getDefaultInstance();
+            case "filter_item":
+                return BettasMain.FILTER_ITEM.get().getDefaultInstance();
+            case "heater_item":
+                return BettasMain.HEATER_ITEM.get().getDefaultInstance();
+            case "large_rock_item":
+                return BettasMain.LARGE_ROCK_ITEM.get().getDefaultInstance();
+            case "medium_rock_item":
+                return BettasMain.MEDIUM_ROCK_ITEM.get().getDefaultInstance();
+            case "small_log_item":
+                return BettasMain.SMALL_LOG_ITEM.get().getDefaultInstance();
+            case "small_rock_item":
+                return BettasMain.SMALL_ROCK_ITEM.get().getDefaultInstance();
+            case "seagrass":
+                return Items.SEAGRASS.getDefaultInstance();
+            case "kelp":
+                return Items.KELP.getDefaultInstance();
+            case "sand":
+                return Items.SAND.getDefaultInstance();
+            default:
+                return Items.AIR.getDefaultInstance();
+        }
     }
 
     @Override

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "A  ",
+    "   "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:cobblestone"
+    }
+
+  },
+  "result": {
+    "item": "bettas:small_rock_item",
+    "count": 1
+  }
+}
