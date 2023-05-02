@@ -3,7 +3,12 @@ package com.dragn.bettas.betta;
 import com.dragn.bettas.BettasMain;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.RandomSwimmingGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.fish.AbstractFishEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,26 +36,12 @@ import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
-    private ResourceLocation textureLocation = null; // cached texture; populated at runtime
-
-    private static final DataParameter<Integer> MODEL;
-    private static final DataParameter<Integer> BASE_PATTERN;
-    private static final DataParameter<int[]> COLOR_MAP;
-
-    private final AnimationFactory factory = new AnimationFactory(this);
-
-    public BettaEntity(EntityType<? extends AbstractFishEntity> type, World world) {
-        super(type, world);
-    }
+    private static final DataParameter<Integer> MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);;
+    private static final DataParameter<Integer> BASE_PATTERN = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);;
+    private static final DataParameter<int[]> COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, (IDataSerializer<int[]>)BettasMain.COLOR_SERIALIZER.get().getSerializer());;
 
     public static boolean checkFishSpawnRules(EntityType<? extends AbstractFishEntity> type, IWorld world, SpawnReason reason, BlockPos blockPos, Random random) {
-        return world.isWaterAt(blockPos) &&
-                world.isWaterAt(blockPos.above()) &&
-                world.isWaterAt(blockPos.below()) &&
-                world.isWaterAt(blockPos.north()) &&
-                world.isWaterAt(blockPos.east()) &&
-                world.isWaterAt(blockPos.south()) &&
-                world.isWaterAt(blockPos.west());
+        return world.isWaterAt(blockPos) && world.isWaterAt(blockPos.north()) && world.isWaterAt(blockPos.east()) && world.isWaterAt(blockPos.south()) && world.isWaterAt(blockPos.west());
     }
 
     public static int[] generateMap() {
@@ -72,6 +63,24 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
         map[6] = palette.getRandomColor();
 
         return map;
+    }
+
+
+
+
+    private ResourceLocation textureLocation = null; // cached texture; populated at runtime
+
+    private final AnimationFactory factory = new AnimationFactory(this);
+
+    public BettaEntity(EntityType<? extends AbstractFishEntity> type, World world) {
+        super(type, world);
+        this.noCulling = true;
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new RandomSwimmingGoal(this, 1d, 10));
     }
 
     @Override
@@ -121,12 +130,6 @@ public class BettaEntity extends AbstractFishEntity implements IAnimatable {
             textureLocation = TextureGen.generateTexture(BasePattern.patternFromOrdinal(getBasePattern()), getColorMap());
         }
         return textureLocation;
-    }
-
-    static {
-        MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
-        BASE_PATTERN = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
-        COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, (IDataSerializer<int[]>)BettasMain.COLOR_SERIALIZER.get().getSerializer());
     }
 
     public int getModel() {

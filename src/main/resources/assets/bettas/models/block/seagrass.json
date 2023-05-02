@@ -1,0 +1,86 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [128, 128],
+	"textures": {
+		"8": "block/seagrass"
+	},
+	"elements": [
+		{
+			"from": [6.08, 0.83, 11.04],
+			"to": [9.92, 4.67, 11.04],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [6.08, 6.08, 6.08]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0}
+			}
+		},
+		{
+			"from": [8.96, 0.83, 10.08],
+			"to": [8.96, 4.67, 13.92],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [6.08, 6.08, 6.08]},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0}
+			}
+		},
+		{
+			"from": [7.04, 0.83, 10.08],
+			"to": [7.04, 4.67, 13.92],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [6.08, 6.08, 6.08]},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0}
+			}
+		},
+		{
+			"from": [6.08, 0.83, 12.96],
+			"to": [9.92, 4.67, 12.96],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [6.08, 6.08, 6.08]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#8", "tintindex": 0}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"ground": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		}
+	},
+	"groups": [
+		{
+			"name": "VoxelShapes",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				{
+					"name": "Seagrass",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [0, 1, 2, 3]
+				}
+			]
+		}
+	]
+}

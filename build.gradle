@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.10.0'
+version = '0.11.0'
 group = 'com.dragn.bettas'
 archivesBaseName = 'DragNBettas-1.16.5'
 

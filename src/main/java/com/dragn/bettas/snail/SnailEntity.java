@@ -56,7 +56,7 @@ public class SnailEntity extends AbstractFishEntity implements IAnimatable {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 3d)
-                .add(Attributes.MOVEMENT_SPEED, 0.5d);
+                .add(Attributes.MOVEMENT_SPEED, 1d);
     }
 
     static class SnailMovementController extends MovementController {
@@ -82,6 +82,7 @@ public class SnailEntity extends AbstractFishEntity implements IAnimatable {
     public SnailEntity(EntityType<? extends AbstractFishEntity> entityType, World world) {
         super(entityType, world);
         this.moveControl = new SnailMovementController(this);
+        this.noCulling = true;
     }
 
     @Override
@@ -96,7 +97,7 @@ public class SnailEntity extends AbstractFishEntity implements IAnimatable {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new RandomWalkingGoal(this, 0.25d));
+        this.goalSelector.addGoal(0, new RandomWalkingGoal(this, 0.25d, 30));
         this.goalSelector.addGoal(2, new FindWaterGoal(this));
     }
 
