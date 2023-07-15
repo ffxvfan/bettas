@@ -10,13 +10,16 @@ import com.dragn.bettas.snail.SnailRender;
 import com.dragn.bettas.tank.TankTileRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -28,7 +31,7 @@ import java.util.Objects;
 
 import static net.minecraftforge.common.BiomeDictionary.Type.*;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BettasMain.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BettaEvent {
 
     @SubscribeEvent
@@ -47,14 +50,6 @@ public class BettaEvent {
 
         /* REGISTER TANK RENDERER */
         RenderTypeLookup.setRenderLayer(BettasMain.TANK.get(), RenderType.cutout());
-
-
-        /* REGISTER BETTA BIOME */
-        RegistryKey<Biome> key = RegistryKey.create(ForgeRegistries.Keys.BIOMES, Objects.requireNonNull(ForgeRegistries.BIOMES.getKey(
-                BettaBiome.BETTA_BIOME.get()
-        )));
-        BiomeDictionary.addTypes(key, WET, SWAMP, OVERWORLD);
-        BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(key, 10));
 
 
         /* REGISTER BETTA SPAWNING */

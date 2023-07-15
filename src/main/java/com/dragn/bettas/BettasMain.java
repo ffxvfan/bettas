@@ -18,8 +18,12 @@ import net.minecraft.item.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -36,7 +40,10 @@ import org.lwjgl.system.CallbackI;
 import software.bernie.geckolib3.GeckoLib;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
+
+import static net.minecraftforge.common.BiomeDictionary.Type.*;
 
 @Mod(BettasMain.MODID)
 public class BettasMain {
@@ -58,12 +65,12 @@ public class BettasMain {
     /* ENTITIES */
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
     public static final RegistryObject<EntityType<BettaEntity>> BETTA_ENTITY = ENTITY_TYPES.register("betta", () -> EntityType.Builder.of(BettaEntity::new, EntityClassification.WATER_AMBIENT).sized(0.3f, 0.1f).build(new ResourceLocation(MODID, "betta").toString()));
-    public static final RegistryObject<EntityType<SnailEntity>> SNAIL_ENTITY = ENTITY_TYPES.register("snail", () -> EntityType.Builder.of(SnailEntity::new, EntityClassification.WATER_AMBIENT).sized(0.2f, 0.1f).build(new ResourceLocation(MODID, "snail").toString()));
+    public static final RegistryObject<EntityType<SnailEntity>> SNAIL_ENTITY = ENTITY_TYPES.register("snail", () -> EntityType.Builder.of(SnailEntity::new, EntityClassification.WATER_AMBIENT).sized(0.09f, 0.09f).build(new ResourceLocation(MODID, "snail").toString()));
 
 
     /* BETTA BLOCKS */
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final RegistryObject<Tank> TANK = BLOCKS.register("tank", Tank::new);
+    public static final RegistryObject<Tank> TANK = BLOCKS.register("tank2", Tank::new);
     public static final RegistryObject<Decor> BIG_LOG = BLOCKS.register("big_log", () -> new Decor(AbstractBlock.Properties.of(Material.WOOD).noOcclusion()));
     public static final RegistryObject<Decor> FILTER = BLOCKS.register("filter", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));
     public static final RegistryObject<Decor> HEATER = BLOCKS.register("heater", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));
@@ -138,5 +145,12 @@ public class BettasMain {
 
     public void setup(final FMLCommonSetupEvent event) {
         NetworkManager.init();
+
+        /* REGISTER BETTA BIOME */
+        RegistryKey<Biome> key = RegistryKey.create(ForgeRegistries.Keys.BIOMES, Objects.requireNonNull(ForgeRegistries.BIOMES.getKey(
+                BettaBiome.BETTA_BIOME.get()
+        )));
+        BiomeDictionary.addTypes(key, WET, SWAMP, OVERWORLD);
+        BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(key, 10));
     }
 }

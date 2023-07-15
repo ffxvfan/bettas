@@ -36,7 +36,7 @@ import java.util.Random;
 
 public class BettaEntity extends AbstractFishEntity implements IAnimatable {
 
-    private static final DataParameter<Integer> MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);;
+    private static final DataParameter<Integer> MODEL = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);
     private static final DataParameter<Integer> BASE_PATTERN = EntityDataManager.defineId(BettaEntity.class, DataSerializers.INT);;
     private static final DataParameter<int[]> COLOR_MAP = EntityDataManager.defineId(BettaEntity.class, (IDataSerializer<int[]>)BettasMain.COLOR_SERIALIZER.get().getSerializer());;
 
