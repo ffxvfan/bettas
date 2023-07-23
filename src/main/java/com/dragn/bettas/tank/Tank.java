@@ -81,21 +81,22 @@ public class Tank extends Block implements IWaterLoggable {
     @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld world, BlockPos pos1, BlockPos pos2) {
         boolean adjacent = state2.is(this);
-        boolean north = adjacent || (this.defaultBlockState().getValue(NORTH_EAST) && this.defaultBlockState().getValue(NORTH_WEST));
-        boolean east =  adjacent || (this.defaultBlockState().getValue(NORTH_EAST) && this.defaultBlockState().getValue(SOUTH_EAST));
-        boolean south = adjacent || (this.defaultBlockState().getValue(SOUTH_EAST) && this.defaultBlockState().getValue(SOUTH_WEST));
-        boolean west =  adjacent || (this.defaultBlockState().getValue(NORTH_WEST) && this.defaultBlockState().getValue(SOUTH_WEST));
+        boolean up = state1.getValue(NORTH_UP) && state1.getValue(EAST_UP) && state1.getValue(SOUTH_UP) && state1.getValue(WEST_UP);
         switch(direction) {
             case UP:
+                boolean north = adjacent || (state1.getValue(NORTH_EAST) && state1.getValue(NORTH_WEST));
+                boolean east =  adjacent || (state1.getValue(NORTH_EAST) && state1.getValue(SOUTH_EAST));
+                boolean south = adjacent || (state1.getValue(SOUTH_EAST) && state1.getValue(SOUTH_WEST));
+                boolean west =  adjacent || (state1.getValue(NORTH_WEST) && state1.getValue(SOUTH_WEST));
                 return state1.setValue(NORTH_UP, north).setValue(EAST_UP, east).setValue(SOUTH_UP, south).setValue(WEST_UP, west);
             case NORTH:
-                return state1.setValue(NORTH_UP, north).setValue(NORTH_EAST, adjacent).setValue(NORTH_WEST, adjacent);
+                return state1.setValue(NORTH_UP, up || adjacent).setValue(NORTH_EAST, adjacent).setValue(NORTH_WEST, adjacent);
             case EAST:
-                return state1.setValue(EAST_UP, east).setValue(NORTH_EAST, adjacent).setValue(SOUTH_EAST, adjacent);
+                return state1.setValue(EAST_UP, up || adjacent).setValue(NORTH_EAST, adjacent).setValue(SOUTH_EAST, adjacent);
             case SOUTH:
-                return state1.setValue(SOUTH_UP, south).setValue(SOUTH_EAST, adjacent).setValue(SOUTH_WEST, adjacent);
+                return state1.setValue(SOUTH_UP, up || adjacent).setValue(SOUTH_EAST, adjacent).setValue(SOUTH_WEST, adjacent);
             case WEST:
-                return state1.setValue(WEST_UP, west).setValue(NORTH_WEST, adjacent).setValue(SOUTH_WEST, adjacent);
+                return state1.setValue(WEST_UP, up || adjacent).setValue(NORTH_WEST, adjacent).setValue(SOUTH_WEST, adjacent);
             case DOWN:
                 return state1.setValue(DOWN, adjacent);
         }
@@ -137,10 +138,10 @@ public class Tank extends Block implements IWaterLoggable {
         return this.defaultBlockState()
                 .setValue(WATERLOGGED, context.getLevel().getFluidState(pos).getType() == Fluids.WATER)
                 .setValue(NORTH_UP, up).setValue(EAST_UP, up).setValue(SOUTH_UP, up).setValue(WEST_UP, up)
-                .setValue(NORTH_UP, up || north).setValue(NORTH_EAST, north).setValue(NORTH_WEST, north)
-                .setValue(EAST_UP, up || east).setValue(SOUTH_EAST, east).setValue(SOUTH_EAST, east)
-                .setValue(SOUTH_UP, up || south).setValue(SOUTH_EAST, south).setValue(SOUTH_WEST, south)
-                .setValue(WEST_UP, up || west).setValue(NORTH_WEST, west).setValue(NORTH_EAST, west)
+                .setValue(NORTH_UP, up).setValue(NORTH_EAST, north).setValue(NORTH_WEST, north)
+                .setValue(EAST_UP, up).setValue(NORTH_EAST, east).setValue(SOUTH_EAST, east)
+                .setValue(SOUTH_UP, up).setValue(SOUTH_EAST, south).setValue(SOUTH_WEST, south)
+                .setValue(WEST_UP, up).setValue(NORTH_WEST, west).setValue(SOUTH_WEST, west)
                 .setValue(DOWN, down);
 
     }
