@@ -44,20 +44,16 @@ public class Tank extends Block implements IWaterLoggable {
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-    private static final BooleanProperty NORTH_UP = BooleanProperty.create("north_up");
-    private static final BooleanProperty EAST_UP = BooleanProperty.create("east_up");
-    private static final BooleanProperty SOUTH_UP = BooleanProperty.create("south_up");
-    private static final BooleanProperty WEST_UP = BooleanProperty.create("west_up");
-    private static final BooleanProperty NORTH_EAST = BooleanProperty.create("north_east");
-    private static final BooleanProperty NORTH_WEST = BooleanProperty.create("north_west");
-    private static final BooleanProperty SOUTH_EAST = BooleanProperty.create("south_east");
-    private static final BooleanProperty SOUTH_WEST = BooleanProperty.create("south_west");
+    private static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+    private static final BooleanProperty EAST = BlockStateProperties.EAST;
+    private static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
+    private static final BooleanProperty WEST = BlockStateProperties.WEST;
 
     private static final VoxelShape NORTH_VOXEL = VoxelShapes.or(Block.box(0, 0, 0, 16, 16, 0.5), Block.box(0.5, 15.5, 0, 15.5, 16, 0.5));
     private static final VoxelShape EAST_VOXEL = VoxelShapes.or(Block.box(15.5, 0, 0, 16, 16, 16), Block.box(15.5, 15.5, 0.5, 16, 16, 15.5));
     private static final VoxelShape SOUTH_VOXEL = VoxelShapes.or(Block.box(0, 0, 15.5, 16, 16, 16), Block.box(0.5, 15.5, 15.5, 15.5, 16, 16));
     private static final VoxelShape WEST_VOXEL = VoxelShapes.or(Block.box(0, 0, 0, 0.5, 16, 16), Block.box(0, 15.5, 0.5, 0.5, 16, 15.5));
-    private static final VoxelShape DOWN_VOXEL = Block.box(-0.05, -0.05, -0.05, 16.1, 0.5, 16.1);
+    private static final VoxelShape DOWN_VOXEL = Block.box(0, -0, 0, 16, 0.5, 16);
 
     private static final ArrayList<String> DECOR_ITEMS = new ArrayList<>(Arrays.asList("big_log_item", "filter_item", "heater_item", "large_rock_item", "medium_rock_item", "small_log_item", "small_rock_item", "kelp", "seagrass", "sand"));
 
@@ -66,14 +62,11 @@ public class Tank extends Block implements IWaterLoggable {
         super(AbstractBlock.Properties.of(Material.GLASS).noOcclusion().strength(0.7F));
         registerDefaultState(getStateDefinition().any()
                 .setValue(WATERLOGGED, false)
-                .setValue(NORTH_UP, false)
-                .setValue(EAST_UP, false)
-                .setValue(SOUTH_UP, false)
-                .setValue(WEST_UP, false)
-                .setValue(NORTH_EAST, false)
-                .setValue(NORTH_WEST, false)
-                .setValue(SOUTH_EAST, false)
-                .setValue(SOUTH_WEST, false)
+                .setValue(WATERLOGGED, false)
+                .setValue(NORTH, false)
+                .setValue(EAST, false)
+                .setValue(SOUTH, false)
+                .setValue(WEST, false)
                 .setValue(DOWN, false)
         );
     }
@@ -81,22 +74,15 @@ public class Tank extends Block implements IWaterLoggable {
     @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld world, BlockPos pos1, BlockPos pos2) {
         boolean adjacent = state2.is(this);
-        boolean up = state1.getValue(NORTH_UP) && state1.getValue(EAST_UP) && state1.getValue(SOUTH_UP) && state1.getValue(WEST_UP);
-        switch(direction) {
-            case UP:
-                boolean north = adjacent || (state1.getValue(NORTH_EAST) && state1.getValue(NORTH_WEST));
-                boolean east =  adjacent || (state1.getValue(NORTH_EAST) && state1.getValue(SOUTH_EAST));
-                boolean south = adjacent || (state1.getValue(SOUTH_EAST) && state1.getValue(SOUTH_WEST));
-                boolean west =  adjacent || (state1.getValue(NORTH_WEST) && state1.getValue(SOUTH_WEST));
-                return state1.setValue(NORTH_UP, north).setValue(EAST_UP, east).setValue(SOUTH_UP, south).setValue(WEST_UP, west);
+        switch (direction) {
             case NORTH:
-                return state1.setValue(NORTH_UP, up || adjacent).setValue(NORTH_EAST, adjacent).setValue(NORTH_WEST, adjacent);
+                return state1.setValue(NORTH, adjacent);
             case EAST:
-                return state1.setValue(EAST_UP, up || adjacent).setValue(NORTH_EAST, adjacent).setValue(SOUTH_EAST, adjacent);
+                return state1.setValue(EAST, adjacent);
             case SOUTH:
-                return state1.setValue(SOUTH_UP, up || adjacent).setValue(SOUTH_EAST, adjacent).setValue(SOUTH_WEST, adjacent);
+                return state1.setValue(SOUTH, adjacent);
             case WEST:
-                return state1.setValue(WEST_UP, up || adjacent).setValue(NORTH_WEST, adjacent).setValue(SOUTH_WEST, adjacent);
+                return state1.setValue(WEST, adjacent);
             case DOWN:
                 return state1.setValue(DOWN, adjacent);
         }
@@ -128,20 +114,18 @@ public class Tank extends Block implements IWaterLoggable {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos pos = context.getClickedPos();
-        boolean up = context.getLevel().getBlockState(pos.above()).getBlock().is(this);
-        boolean north = context.getLevel().getBlockState(pos.north()).getBlock().is(this);
-        boolean east = context.getLevel().getBlockState(pos.east()).getBlock().is(this);
-        boolean south = context.getLevel().getBlockState(pos.south()).getBlock().is(this);
-        boolean west = context.getLevel().getBlockState(pos.west()).getBlock().is(this);
-        boolean down = context.getLevel().getBlockState(pos.below()).getBlock().is(this);
+        boolean north = context.getLevel().getBlockState(pos.north()).getBlock() == this;
+        boolean east = context.getLevel().getBlockState(pos.east()).getBlock() == this;
+        boolean south = context.getLevel().getBlockState(pos.south()).getBlock() == this;
+        boolean west = context.getLevel().getBlockState(pos.west()).getBlock() == this;
+        boolean down = context.getLevel().getBlockState(pos.below()).getBlock() == this;
 
         return this.defaultBlockState()
                 .setValue(WATERLOGGED, context.getLevel().getFluidState(pos).getType() == Fluids.WATER)
-                .setValue(NORTH_UP, up).setValue(EAST_UP, up).setValue(SOUTH_UP, up).setValue(WEST_UP, up)
-                .setValue(NORTH_UP, up).setValue(NORTH_EAST, north).setValue(NORTH_WEST, north)
-                .setValue(EAST_UP, up).setValue(NORTH_EAST, east).setValue(SOUTH_EAST, east)
-                .setValue(SOUTH_UP, up).setValue(SOUTH_EAST, south).setValue(SOUTH_WEST, south)
-                .setValue(WEST_UP, up).setValue(NORTH_WEST, west).setValue(SOUTH_WEST, west)
+                .setValue(NORTH, north)
+                .setValue(EAST, east)
+                .setValue(SOUTH, south)
+                .setValue(WEST, west)
                 .setValue(DOWN, down);
 
     }
@@ -153,6 +137,11 @@ public class Tank extends Block implements IWaterLoggable {
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         return Collections.singletonList(this.asItem().getDefaultInstance());
+    }
+
+    @Override
+    public void animateTick(BlockState p_180655_1_, World p_180655_2_, BlockPos p_180655_3_, Random p_180655_4_) {
+        super.animateTick(p_180655_1_, p_180655_2_, p_180655_3_, p_180655_4_);
     }
 
     @Override
@@ -220,6 +209,6 @@ public class Tank extends Block implements IWaterLoggable {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED, NORTH_UP, EAST_UP, SOUTH_UP, WEST_UP, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST, DOWN);
+        builder.add(WATERLOGGED, NORTH, EAST, SOUTH, WEST, DOWN);
     }
 }

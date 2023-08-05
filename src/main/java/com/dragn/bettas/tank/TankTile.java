@@ -11,18 +11,25 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class TankTile extends TileEntity implements ITickableTileEntity {
 
+    public static final int DAY = 24 * 60 * 20;
+
+
+
+    public int time = 0;
+    public int stage = 0;
+
     public LinkedHashMap<String, Direction> decor = new LinkedHashMap<>();
 
     public TankTile() {
         super(BettasMain.TANK_TILE.get());
     }
-
 
     @Override
     public CompoundNBT save(CompoundNBT compoundNBT) {
@@ -69,10 +76,17 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         super.setRemoved();
     }
 
+
+
     @Override
     public void tick() {
-        if(!level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        if(level.isClientSide) {
+            return;
+        }
+
+        time++;
+        if(time % DAY == 0) {
+
         }
     }
 }
