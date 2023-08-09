@@ -1,41 +1,7 @@
 {
-  "multipart": [
-    {
-      "apply": {
-        "model": "bettas:block/tank_base"
-      }
-    },
-    {
-      "when": {
-        "north": "false"
-      },
-      "apply": {
-        "model": "bettas:block/tank_side_north"
-      }
-    },
-    {
-      "when": {
-        "east": "false"
-      },
-      "apply": {
-        "model": "bettas:block/tank_side_east"
-      }
-    },
-    {
-      "when": {
-        "south": "false"
-      },
-      "apply": {
-        "model": "bettas:block/tank_side_south"
-      }
-    },
-    {
-      "when": {
-        "west": "false"
-      },
-      "apply": {
-        "model": "bettas:block/tank_side_west"
-      }
+  "variants": {
+    "": {
+      "model": "bettas:block/tank"
     }
-  ]
+  }
 }

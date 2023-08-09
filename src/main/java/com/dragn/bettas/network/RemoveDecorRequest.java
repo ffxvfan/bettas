@@ -39,7 +39,7 @@ public class RemoveDecorRequest {
     }
 
     public static void handle(RemoveDecorRequest msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ((TankTile)Minecraft.getInstance().level.getBlockEntity(msg.pos)).decor.remove(msg.decorName)));
+//        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ((TankTile)Minecraft.getInstance().level.getBlockEntity(msg.pos)).decor.remove(msg.decorName)));
         ctx.get().setPacketHandled(true);
     }
 }

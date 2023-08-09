@@ -1,13 +1,11 @@
 package com.dragn.bettas.decor;
 
-import net.minecraft.block.*;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-
-import javax.annotation.Nullable;
 
 public class Decor extends Block {
 

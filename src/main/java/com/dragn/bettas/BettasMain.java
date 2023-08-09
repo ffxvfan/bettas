@@ -21,7 +21,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -36,10 +35,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.system.CallbackI;
 import software.bernie.geckolib3.GeckoLib;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
@@ -70,7 +67,7 @@ public class BettasMain {
 
     /* BETTA BLOCKS */
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final RegistryObject<Tank> TANK = BLOCKS.register("tank2", Tank::new);
+    public static final RegistryObject<Tank> TANK = BLOCKS.register("tank", Tank::new);
     public static final RegistryObject<Decor> BIG_LOG = BLOCKS.register("big_log", () -> new Decor(AbstractBlock.Properties.of(Material.WOOD).noOcclusion()));
     public static final RegistryObject<Decor> FILTER = BLOCKS.register("filter", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));
     public static final RegistryObject<Decor> HEATER = BLOCKS.register("heater", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));

@@ -4,7 +4,7 @@ import com.dragn.bettas.BettasMain;
 import net.minecraft.util.ResourceLocation;
 
 public enum Algae {
-    ALGAE0(new ResourceLocation(BettasMain.MODID, "textures/blocks/tankwalls.png")),
+    ALGAE0(new ResourceLocation(BettasMain.MODID, "textures/blocks/tank.png")),
     ALGAE1(new ResourceLocation(BettasMain.MODID, "textures/blocks/algaestage1.png")),
     ALGAE2(new ResourceLocation(BettasMain.MODID, "textures/blocks/algaestage2.png")),
     ALGAE3(new ResourceLocation(BettasMain.MODID, "textures/blocks/algaestage3.png")),
