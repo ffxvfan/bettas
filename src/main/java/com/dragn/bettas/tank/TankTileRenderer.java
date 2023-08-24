@@ -27,6 +27,47 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
     private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, new ResourceLocation(BettasMain.MODID, "blocks/tank"));
 
+    private static IVertexBuilder renderBottom(IVertexBuilder iVertexBuilder, Matrix4f matrix4f, Matrix3f matrix3f, int lightVal, int overlay) {
+
+        // up
+        iVertexBuilder.vertex(matrix4f, 0, 1/64f, 0).uv(2/64f, 2/64f).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 1/64f, 1).uv(2/64f, 0).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1/64f, 1).uv(0, 0).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1/64f, 0).uv(0, 2/64f).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        // down
+        iVertexBuilder.vertex(matrix4f, 0, 0, 0).uv(4/64f, 0).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 0, 1).uv(4/64f, 2/64f).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 0, 1).uv(2/64f, 2/64f).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 0, 0).uv(2/64f, 0).normal(matrix3f, 0, 1, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        // north
+        iVertexBuilder.vertex(matrix4f, 0, 0, 0).uv(6/64f, 0).normal(matrix3f, 0, 0, -1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 1, 0).uv(6/64f, 0).normal(matrix3f, 0, 0, -1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1, 0).uv(8/64f, 0).normal(matrix3f, 0, 0, -1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 0, 0).uv(8/64f, 0).normal(matrix3f, 0, 0, -1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        // east
+        iVertexBuilder.vertex(matrix4f, 0, 0, 0).uv(4/64f, 4/64f).normal(matrix3f, 1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 0, 1).uv(4/64f, 4/64f).normal(matrix3f, 1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 1, 1).uv(4/64f, 6/64f).normal(matrix3f, 1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 1, 0).uv(4/64f, 4/64f).normal(matrix3f, 1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        // south
+        iVertexBuilder.vertex(matrix4f, 0, 0, 1).uv(6/64f, 0).normal(matrix3f, 0, 0, 1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0, 1, 1).uv(6/64f, 0).normal(matrix3f, 0, 0, 1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1, 1).uv(8/64f, 0).normal(matrix3f, 0, 0, 1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 0, 1).uv(8/64f, 0).normal(matrix3f, 0, 0, 1).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        // west
+        iVertexBuilder.vertex(matrix4f, 1, 0, 0).uv(4/64f, 4/64f).normal(matrix3f, -1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 0, 1).uv(4/64f, 4/64f).normal(matrix3f, -1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1, 1).uv(4/64f, 6/64f).normal(matrix3f, -1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+        iVertexBuilder.vertex(matrix4f, 1, 1, 0).uv(4/64f, 4/64f).normal(matrix3f, -1, 0, 0).uv2(lightVal).color(255, 255, 255, 255).overlayCoords(overlay).endVertex();
+
+        return iVertexBuilder;
+    }
+
     public TankTileRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
     }
@@ -40,35 +81,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
         Matrix4f matrix4f = matrixStack.last().pose();
         Matrix3f matrix3f = matrixStack.last().normal();
 
-        iVertexBuilder.vertex(0, 0, 1).color(255, 255, 255, 255).uv(0, 0).overlayCoords(overlay).uv2(lightVal).normal(0, 0, -1).endVertex();
-        iVertexBuilder.vertex(0, 1, 1).color(255, 255, 255, 255).uv(0, 1/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, -1).endVertex();
-        iVertexBuilder.vertex(1, 1, 1).color(255, 255, 255, 255).uv(1/32f, 1/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, -1).endVertex();
-        iVertexBuilder.vertex(1, 0, 1).color(255, 255, 255, 255).uv(1/32f, 0).overlayCoords(overlay).uv2(lightVal).normal(0, 0, -1).endVertex();
+        renderBottom(iVertexBuilder, matrix4f, matrix3f, lightVal, overlay);
 
-        iVertexBuilder.vertex( 0, 0, 0).color(255, 255, 255, 255).uv(1/32f, 1/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, 1).endVertex();
-        iVertexBuilder.vertex( 0, 1, 0).color(255, 255, 255, 255).uv(1/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, 1).endVertex();
-        iVertexBuilder.vertex( 1, 1, 0).color(255, 255, 255, 255).uv(2/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, 1).endVertex();
-        iVertexBuilder.vertex( 1, 0, 0).color(255, 255, 255, 255).uv(2/32f, 1/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 0, 1).endVertex();
-
-        iVertexBuilder.vertex( 0, 0, 0).color(255, 255, 255, 255).uv(2/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 0, 0, 1).color(255, 255, 255, 255).uv(2/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 0, 1, 1).color(255, 255, 255, 255).uv(3/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 0, 1, 0).color(255, 255, 255, 255).uv(3/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(1, 0, 0).endVertex();
-
-        iVertexBuilder.vertex( 1, 0, 0).color(255, 255, 255, 255).uv(2/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(-1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 1, 0, 1).color(255, 255, 255, 255).uv(2/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(-1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 1, 1, 1).color(255, 255, 255, 255).uv(3/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(-1, 0, 0).endVertex();
-        iVertexBuilder.vertex( 1, 1, 0).color(255, 255, 255, 255).uv(3/32f, 2/32f).overlayCoords(overlay).uv2(lightVal).normal(-1, 0, 0).endVertex();
-
-        iVertexBuilder.vertex( 0, 0, 0).color(255, 255, 255, 255).uv(3/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(0, -1, 0).endVertex();
-        iVertexBuilder.vertex( 0, 0, 1).color(255, 255, 255, 255).uv(3/32f, 4/32f).overlayCoords(overlay).uv2(lightVal).normal(0, -1, 0).endVertex();
-        iVertexBuilder.vertex( 1, 0, 1).color(255, 255, 255, 255).uv(4/32f, 4/32f).overlayCoords(overlay).uv2(lightVal).normal(0, -1, 0).endVertex();
-        iVertexBuilder.vertex( 1, 0, 0).color(255, 255, 255, 255).uv(4/32f, 3/32f).overlayCoords(overlay).uv2(lightVal).normal(0, -1, 0).endVertex();
-
-        iVertexBuilder.vertex( 0, 1, 0).color(255, 255, 255, 255).uv(4/32f, 4/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 1, 0).endVertex();
-        iVertexBuilder.vertex( 0, 1, 1).color(255, 255, 255, 255).uv(4/32f, 5/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 1, 0).endVertex();
-        iVertexBuilder.vertex( 1, 1, 1).color(255, 255, 255, 255).uv(5/32f, 5/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 1, 0).endVertex();
-        iVertexBuilder.vertex( 1, 1, 0).color(255, 255, 255, 255).uv(5/32f, 4/32f).overlayCoords(overlay).uv2(lightVal).normal(0, 1, 0).endVertex();
 
         matrixStack.popPose();
     }
