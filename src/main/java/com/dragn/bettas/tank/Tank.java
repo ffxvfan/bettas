@@ -18,11 +18,6 @@ public class Tank extends Block {
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState blockState) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }
