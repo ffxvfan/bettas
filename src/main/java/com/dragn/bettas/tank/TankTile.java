@@ -8,8 +8,13 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class TankTile extends TileEntity implements ITickableTileEntity {
 
@@ -18,8 +23,21 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public static final byte CONNECTED_NORTH = 0b100;
     public static final byte CONNECTED_EAST = 0b1000;
 
+    public static final VoxelShape NORTH = createBox(TankTileRenderer.NORTH_VERTS);
+    public static final VoxelShape EAST = createBox(TankTileRenderer.EAST_VERTS);
+    public static final VoxelShape SOUTH = createBox(TankTileRenderer.SOUTH_VERTS);
+    public static final VoxelShape WEST = createBox(TankTileRenderer.WEST_VERTS);
+    public static final VoxelShape BOTTOM = createBox(TankTileRenderer.BOTTOM_VERTS);
+
+    private static final VoxelShape[] SHAPES = {SOUTH, WEST, NORTH, EAST};
+
+    private static VoxelShape createBox(float[] v) {
+        return VoxelShapes.box(v[0], v[1], v[2], v[3], v[4], v[5]);
+    }
 
 
+
+    public VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, BOTTOM);
     public byte connected = 0b0000;
 
     public int algae = 0;
@@ -57,12 +75,14 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     public void addConnected(Direction direction) {
         this.connected |= 1 << direction.get2DDataValue();
+        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.ONLY_FIRST);
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
     public void removeConnected(Direction direction) {
         this.connected &= ~(1 << direction.get2DDataValue());
+        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.OR);
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }

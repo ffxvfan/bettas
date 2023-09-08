@@ -22,55 +22,45 @@ import javax.annotation.Nullable;
 
 public class Tank extends Block {
 
-    private static final VoxelShape NORTH = createBox(TankTileRenderer.NORTH_VERTS);
-    private static final VoxelShape EAST = createBox(TankTileRenderer.EAST_VERTS);
-    private static final VoxelShape SOUTH = createBox(TankTileRenderer.SOUTH_VERTS);
-    private static final VoxelShape WEST = createBox(TankTileRenderer.WEST_VERTS);
-    private static final VoxelShape BOTTOM = createBox(TankTileRenderer.BOTTOM_VERTS);
-
-    private static final VoxelShape[] SHAPES = {SOUTH, WEST, NORTH, EAST};
-
-    private static VoxelShape createBox(float[] v) {
-        return VoxelShapes.box(v[0], v[1], v[2], v[3], v[4], v[5]);
-    }
-
-
-
-    public VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, BOTTOM);
-
     public Tank() {
         super(AbstractBlock.Properties.of(Material.GLASS).strength(0.7f).sound(SoundType.GLASS).noOcclusion());
     }
 
+
+
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader iBlockReader, BlockPos pos, ISelectionContext context) {
-        return this.shape;
+        TileEntity tile = iBlockReader.getBlockEntity(pos);
+
+        VoxelShape shape = TankTile.BOTTOM;
+        if(tile instanceof TankTile) {
+            if ((((TankTile) tile).connected & TankTile.CONNECTED_NORTH) == 0) {
+                shape = VoxelShapes.join(shape, TankTile.NORTH, IBooleanFunction.OR);
+            }
+            if ((((TankTile) tile).connected & TankTile.CONNECTED_EAST) == 0) {
+                shape = VoxelShapes.join(shape, TankTile.EAST, IBooleanFunction.OR);
+            }
+            if ((((TankTile) tile).connected & TankTile.CONNECTED_SOUTH) == 0) {
+                shape = VoxelShapes.join(shape, TankTile.SOUTH, IBooleanFunction.OR);
+            }
+            if ((((TankTile) tile).connected & TankTile.CONNECTED_WEST) == 0) {
+                shape = VoxelShapes.join(shape, TankTile.WEST, IBooleanFunction.OR);
+            }
+        }
+        return shape;
     }
 
-    public void addSide(Direction direction) {
-        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.OR);
-    }
 
-    public void removeSide(Direction direction) {
-        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.ONLY_FIRST);
-    }
 
     @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld iWorld, BlockPos pos1, BlockPos pos2) {
-        if(direction == Direction.UP || direction == Direction.DOWN) {
-            return state1;
-        }
-
-        Block block = state2.getBlock();
-        if(!iWorld.isClientSide()) {
-            if (block.is(this)) {
+        if(!iWorld.isClientSide() && !(direction == Direction.UP || direction == Direction.DOWN)) {
+            Block block = iWorld.getBlockState(pos2).getBlock();
+            if (block instanceof Tank) {
                 ((TankTile) iWorld.getBlockEntity(pos1)).addConnected(direction);
                 ((TankTile) iWorld.getBlockEntity(pos2)).addConnected(direction.getOpposite());
-                this.removeSide(direction);
-                ((Tank) block).removeSide(direction.getOpposite());
-            } else if (block.is(Blocks.AIR)) {
+            } else if (block instanceof AirBlock) {
                 ((TankTile) iWorld.getBlockEntity(pos1)).removeConnected(direction);
-                this.addSide(direction);
             }
         }
         return state1;
