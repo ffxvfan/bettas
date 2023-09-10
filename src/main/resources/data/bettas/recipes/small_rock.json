@@ -1,8 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "AA ",
-    "AA ",
+    "   ",
+    "A  ",
     "   "
   ],
   "key": {
@@ -12,7 +12,7 @@
 
   },
   "result": {
-    "item": "bettas:large_rock_item",
+    "item": "bettas:small_rock",
     "count": 1
   }
 }

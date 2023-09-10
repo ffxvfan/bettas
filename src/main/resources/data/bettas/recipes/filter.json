@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "BB ",
-    "BB ",
+    "AA ",
     "AA "
   ],
   "key": {
@@ -15,7 +15,7 @@
 
   },
   "result": {
-    "item": "bettas:heater_item",
+    "item": "bettas:filter",
     "count": 1
   }
 }

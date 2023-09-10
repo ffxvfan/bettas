@@ -3,14 +3,12 @@ package com.dragn.bettas;
 import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.biome.BettaBiome;
 import com.dragn.bettas.decor.Decor;
-import com.dragn.bettas.network.NetworkManager;
+import com.dragn.bettas.item.AlgaeScraper;
+import com.dragn.bettas.item.AllRound;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.tank.Tank;
 import com.dragn.bettas.tank.TankTile;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluids;
@@ -36,6 +34,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+
 
 import java.util.Objects;
 import java.util.Random;
@@ -68,16 +67,17 @@ public class BettasMain {
     /* BETTA BLOCKS */
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final RegistryObject<Tank> TANK = BLOCKS.register("tank", Tank::new);
-    public static final RegistryObject<Decor> BIG_LOG = BLOCKS.register("big_log", () -> new Decor(AbstractBlock.Properties.of(Material.WOOD).noOcclusion()));
-    public static final RegistryObject<Decor> FILTER = BLOCKS.register("filter", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));
-    public static final RegistryObject<Decor> HEATER = BLOCKS.register("heater", () -> new Decor(AbstractBlock.Properties.of(Material.METAL).noOcclusion()));
-    public static final RegistryObject<Decor> LARGE_ROCK = BLOCKS.register("large_rock", () -> new Decor(AbstractBlock.Properties.of(Material.STONE).noOcclusion()));
-    public static final RegistryObject<Decor> MEDIUM_ROCK = BLOCKS.register("medium_rock", () -> new Decor(AbstractBlock.Properties.of(Material.STONE).noOcclusion()));
-    public static final RegistryObject<Decor> SMALL_LOG = BLOCKS.register("small_log", () -> new Decor(AbstractBlock.Properties.of(Material.WOOD).noOcclusion()));
-    public static final RegistryObject<Decor> SMALL_ROCK = BLOCKS.register("small_rock", () -> new Decor(AbstractBlock.Properties.of(Material.STONE).noOcclusion()));
-    public static final RegistryObject<Decor> KELP = BLOCKS.register("kelp", () -> new Decor(AbstractBlock.Properties.copy(Blocks.KELP)));
-    public static final RegistryObject<Decor> SEAGRASS = BLOCKS.register("seagrass", () -> new Decor(AbstractBlock.Properties.copy(Blocks.SEAGRASS)));
-    public static final RegistryObject<Decor> SUBSTRATE = BLOCKS.register("substrate", () -> new Decor(AbstractBlock.Properties.of(Material.SAND).noOcclusion()));
+    static {
+        final String[] plainDecor = {"big_log", "filter", "heater", "large_rock", "medium_rock", "small_log", "small_rock"};
+        for(String name : plainDecor) {
+            Block block = (new Decor(name));
+            ForgeRegistries.BLOCKS.register(block);
+        }
+        ForgeRegistries.BLOCKS.register(new Decor("kelp", Items.KELP));
+        ForgeRegistries.BLOCKS.register(new Decor("seagrass", Items.SEAGRASS));
+        ForgeRegistries.BLOCKS.register(new Decor("substrate", Items.SAND));
+    }
+
 
 
     /* ITEMS */
@@ -87,14 +87,8 @@ public class BettasMain {
     public static final RegistryObject<BucketItem> BETTA_BUCKET = ITEMS.register("betta_bucket", () -> new FishBucketItem(BETTA_ENTITY, () -> Fluids.WATER, new Item.Properties().stacksTo(1).tab(BETTAS_TAB)));
     public static final RegistryObject<BucketItem> SNAIL_BUCKET = ITEMS.register("snail_bucket", () -> new FishBucketItem(SNAIL_ENTITY, () -> Fluids.WATER, new Item.Properties().stacksTo(1).tab(BETTAS_TAB)));
     public static final RegistryObject<BlockItem> TANK_ITEM = ITEMS.register("tank", () -> new BlockItem(TANK.get(), new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> BIG_LOG_ITEM = ITEMS.register("big_log_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> FILTER_ITEM = ITEMS.register("filter_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> HEATER_ITEM = ITEMS.register("heater_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> LARGE_ROCK_ITEM = ITEMS.register("large_rock_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> MEDIUM_ROCK_ITEM = ITEMS.register("medium_rock_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> SMALL_LOG_ITEM = ITEMS.register("small_log_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-    public static final RegistryObject<Item> SMALL_ROCK_ITEM = ITEMS.register("small_rock_item", () -> new Item(new Item.Properties().tab(BETTAS_TAB)));
-
+    public static final RegistryObject<Item> ALGAE_SCRAPER = ITEMS.register("algae_scraper", AlgaeScraper::new);
+    public static final RegistryObject<Item> ALLROUND = ITEMS.register("allround", AllRound::new);
 
     /* BETTA TILE ENTITIES */
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
@@ -141,8 +135,6 @@ public class BettasMain {
     }
 
     public void setup(final FMLCommonSetupEvent event) {
-        NetworkManager.init();
-
         /* REGISTER BETTA BIOME */
         RegistryKey<Biome> key = RegistryKey.create(ForgeRegistries.Keys.BIOMES, Objects.requireNonNull(ForgeRegistries.BIOMES.getKey(
                 BettaBiome.BETTA_BIOME.get()

@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
-    "AB ",
-    "   "
+    "BB ",
+    "BB ",
+    "AA "
   ],
   "key": {
     "A": {
-      "item": "minecraft:oak_log"
+      "item": "minecraft:iron_ingot"
     },
     "B": {
-      "item": "minecraft:oak_planks"
+      "item": "minecraft:iron_nugget"
     }
 
   },
   "result": {
-    "item": "bettas:small_log_item",
+    "item": "bettas:heater",
     "count": 1
   }
 }

@@ -7,8 +7,6 @@ import com.dragn.bettas.betta.BettaRender;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.snail.SnailRender;
 import com.dragn.bettas.tank.TankTileRenderer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -33,10 +31,6 @@ public class BettaEvent {
         /* REGISTER RENDERERS */
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.BETTA_ENTITY.get(), BettaRender::new);
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.SNAIL_ENTITY.get(), SnailRender::new);
-
-
-        /* REGISTER TANK RENDERER */
-        //RenderTypeLookup.setRenderLayer(BettasMain.TANK.get(), RenderType.cutout());
 
 
         /* REGISTER BETTA SPAWNING */

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "   ",
-    "A  ",
+    "AA ",
     "   "
   ],
   "key": {
@@ -12,7 +12,7 @@
 
   },
   "result": {
-    "item": "bettas:small_rock_item",
+    "item": "bettas:medium_rock",
     "count": 1
   }
 }

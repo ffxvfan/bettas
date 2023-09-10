@@ -3,6 +3,8 @@ package com.dragn.bettas.tank;
 import com.dragn.bettas.BettasMain;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -10,7 +12,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.system.CallbackI;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
@@ -23,6 +25,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
     };
 
     private static final int[] NORMALS = {-1, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 0, -1};
+    private static final int[] INDICES3 = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+    private static final int[] INDICES6 = {0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5};
 
     private static void renderPart(IVertexBuilder iVertexBuilder, MatrixStack matrixStack, int lightVal, int overlay, float[] vertices, float[] uvs) {
         Matrix4f matrix4f = matrixStack.last().pose();
@@ -31,23 +35,23 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
         float[] v = new float[3];
         for(int i = 0, u = 0; i < 6; u+=4, i++) {
 
-            int pos1 = i % 3;
-            int pos2 = (i + 1) % 3;
-            int pos3 = (i + 2) % 3;
+            int pos1 = INDICES3[i];
+            int pos2 = INDICES3[i + 1];
+            int pos3 = INDICES3[i + 2];
 
-            v[pos1] = vertices[(i + 3) % 6];
-            v[pos2] = vertices[(i + 1) % 6];
-            v[pos3] = vertices[(i + 2) % 6];
+            v[pos1] = vertices[INDICES6[i + 3]];
+            v[pos2] = vertices[INDICES6[i + 1]];
+            v[pos3] = vertices[INDICES6[i + 2]];
 
             iVertexBuilder.vertex(matrix4f, v[0], v[1], v[2]).color(255, 255, 255, 255).uv(uvs[u], uvs[u+1]).overlayCoords(overlay).uv2(lightVal).normal(matrix3f, NORMALS[i], NORMALS[i+6], NORMALS[i+12]).endVertex();
 
-            v[pos2] = vertices[(i + 4) % 6];
+            v[pos2] = vertices[INDICES6[i + 4]];
             iVertexBuilder.vertex(matrix4f, v[0], v[1], v[2]).color(255, 255, 255, 255).uv(uvs[u+2], uvs[u+1]).overlayCoords(overlay).uv2(lightVal).normal(matrix3f, NORMALS[i], NORMALS[i+6], NORMALS[i+12]).endVertex();
 
-            v[pos3] = vertices[(i + 5) % 6];
+            v[pos3] = vertices[INDICES6[i + 5]];
             iVertexBuilder.vertex(matrix4f, v[0], v[1], v[2]).color(255, 255, 255, 255).uv(uvs[u+2], uvs[u+3]).overlayCoords(overlay).uv2(lightVal).normal(matrix3f, NORMALS[i], NORMALS[i+6], NORMALS[i+12]).endVertex();
 
-            v[pos2] = vertices[(i + 1) % 6];
+            v[pos2] = vertices[INDICES6[i + 1]];
             iVertexBuilder.vertex(matrix4f, v[0], v[1], v[2]).color(255, 255, 255, 255).uv(uvs[u], uvs[u+3]).overlayCoords(overlay).uv2(lightVal).normal(matrix3f, NORMALS[i], NORMALS[i+6], NORMALS[i+12]).endVertex();
         }
     }
@@ -66,6 +70,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
     public static final float[] SOUTH_VERTS = {0.015625f, 0.015625f, 0.984375f, 0.984375f, 1.015625f, 1};
     private static final float[] SOUTH_UVS = {0.2109375f, 0.3828125f, 0.21484375f, 0.5078125f, 0.50390625f, 0.04296875f, 0.3828125f, 0.0390625f, 0.0f, 0.3828125f, 0.12109375f, 0.5078125f, 0.203125f, 0.3828125f, 0.20703125f, 0.5078125f, 0.50390625f, 0.046875f, 0.3828125f, 0.05078125f, 0.265625f, 0.125f, 0.38671875f, 0.25f};
+
+    private final BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
 
 
 
@@ -92,6 +98,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
         if((tankTile.connected & TankTile.CONNECTED_WEST) == 0) {
             renderPart(iVertexBuilder, matrixStack, lightVal, overlay, WEST_VERTS, WEST_UVS);
         }
+
+        tankTile.allDecor().forEach(state -> renderer.renderBlock(state, matrixStack, buffer, lightVal, overlay, EmptyModelData.INSTANCE));
 
         matrixStack.popPose();
     }

@@ -1,16 +1,20 @@
 package com.dragn.bettas.tank;
 
 import com.dragn.bettas.BettasMain;
+import com.dragn.bettas.decor.Decor;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -26,35 +30,18 @@ public class Tank extends Block {
         super(AbstractBlock.Properties.of(Material.GLASS).strength(0.7f).sound(SoundType.GLASS).noOcclusion());
     }
 
-
-
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader iBlockReader, BlockPos pos, ISelectionContext context) {
         TileEntity tile = iBlockReader.getBlockEntity(pos);
-
-        VoxelShape shape = TankTile.BOTTOM;
         if(tile instanceof TankTile) {
-            if ((((TankTile) tile).connected & TankTile.CONNECTED_NORTH) == 0) {
-                shape = VoxelShapes.join(shape, TankTile.NORTH, IBooleanFunction.OR);
-            }
-            if ((((TankTile) tile).connected & TankTile.CONNECTED_EAST) == 0) {
-                shape = VoxelShapes.join(shape, TankTile.EAST, IBooleanFunction.OR);
-            }
-            if ((((TankTile) tile).connected & TankTile.CONNECTED_SOUTH) == 0) {
-                shape = VoxelShapes.join(shape, TankTile.SOUTH, IBooleanFunction.OR);
-            }
-            if ((((TankTile) tile).connected & TankTile.CONNECTED_WEST) == 0) {
-                shape = VoxelShapes.join(shape, TankTile.WEST, IBooleanFunction.OR);
-            }
+            return ((TankTile) tile).shape;
         }
-        return shape;
+        return VoxelShapes.empty();
     }
-
-
 
     @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld iWorld, BlockPos pos1, BlockPos pos2) {
-        if(!iWorld.isClientSide() && !(direction == Direction.UP || direction == Direction.DOWN)) {
+        if(!(direction == Direction.UP || direction == Direction.DOWN)) {
             Block block = iWorld.getBlockState(pos2).getBlock();
             if (block instanceof Tank) {
                 ((TankTile) iWorld.getBlockEntity(pos1)).addConnected(direction);
@@ -78,11 +65,19 @@ public class Tank extends Block {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand, BlockRayTraceResult blockRayTraceResult) {
-        TankTile tileEntity = (TankTile) world.getBlockEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTraceResult) {
         if(!world.isClientSide && hand == Hand.MAIN_HAND) {
-
+            TankTile tankTile = (TankTile) world.getBlockEntity(pos);
+            Item item = player.getItemInHand(hand).getItem();
+            if(item == Items.AIR) {
+                ItemStack itemStack = tankTile.removeDecor();
+                if(itemStack != null) {
+                    world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack));
+                }
+            } else if(Decor.ITEM_TO_DECOR.containsKey(item)) {
+                tankTile.addDecor(item, player.getDirection());
+            }
         }
-        return super.use(state, world, pos, entity, hand, blockRayTraceResult);
+        return super.use(state, world, pos, player, hand, blockRayTraceResult);
     }
 }
