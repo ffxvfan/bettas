@@ -6,9 +6,13 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -24,10 +28,13 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class Tank extends Block {
+import static net.minecraft.state.properties.BlockStateProperties.WATERLOGGED;
+
+public class Tank extends Block implements IWaterLoggable {
 
     public Tank() {
         super(AbstractBlock.Properties.of(Material.GLASS).strength(0.7f).sound(SoundType.GLASS).noOcclusion());
+        this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -38,6 +45,17 @@ public class Tank extends Block {
         }
         return VoxelShapes.empty();
     }
+
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public BlockRenderType getRenderShape(BlockState p_149645_1_) {
+        return BlockRenderType.INVISIBLE;
+    }
+
+
 
     @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld iWorld, BlockPos pos1, BlockPos pos2) {
@@ -79,5 +97,10 @@ public class Tank extends Block {
             }
         }
         return super.use(state, world, pos, player, hand, blockRayTraceResult);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(WATERLOGGED);
     }
 }

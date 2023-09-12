@@ -2,17 +2,24 @@ package com.dragn.bettas.tank;
 
 import com.dragn.bettas.BettasMain;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.client.model.data.EmptyModelData;
+
+import static org.lwjgl.opengl.GL11.GL_ONE;
 
 public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
@@ -73,6 +80,36 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
     private final BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
 
+    private static class CustomRenderType extends RenderType {
+
+        public CustomRenderType(String name, VertexFormat format, int mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
+            super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
+        }
+
+        public static final RenderState.TransparencyState TRANSLUCENT_BLEND = new RenderState.TransparencyState("translucent_blend", () -> {
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            //RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE_MINUS_SRC_COLOR, GlStateManager.DestFactor.ONE);
+        }, () -> {
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        });
+
+        public static RenderType entityTranslucentZOffset(ResourceLocation location) {
+            RenderType.State rendertype$state = RenderType.State.builder()
+                    .setTextureState(new RenderState.TextureState(location, false, false))
+                    .setTransparencyState(TRANSLUCENT_BLEND)
+                    .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                    .setAlphaState(DEFAULT_ALPHA)
+                    .setCullState(NO_CULL)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .createCompositeState(true);
+            return create("entity_translucent_z_offset", DefaultVertexFormats.NEW_ENTITY, 7, 256, true, true, rendertype$state);
+        }
+    }
+
 
 
     public TankTileRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
@@ -83,7 +120,7 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
     public void render(TankTile tankTile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightVal, int overlay) {
         matrixStack.pushPose();
 
-        IVertexBuilder iVertexBuilder = buffer.getBuffer(RenderType.entityTranslucent(ALGAE_LEVEL[tankTile.algae]));
+        IVertexBuilder iVertexBuilder = buffer.getBuffer(CustomRenderType.entityTranslucentZOffset(ALGAE_LEVEL[tankTile.algae]));
         renderPart(iVertexBuilder, matrixStack, lightVal, overlay, BOTTOM_VERTS, BOTTOM_UVS);
 
         if((tankTile.connected & TankTile.CONNECTED_NORTH) == 0) {
