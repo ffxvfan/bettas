@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,6 +32,7 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
             new ResourceLocation(BettasMain.MODID, "textures/blocks/algae3.png"),
             new ResourceLocation(BettasMain.MODID, "textures/blocks/algae4.png"),
     };
+
 
     private static final int[] NORMALS = {-1, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 0, -1};
     private static final int[] INDICES3 = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
@@ -63,19 +66,19 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
         }
     }
 
-    public static final float[] BOTTOM_VERTS = {0, 0, 0, 1, 0.015625f, 1};
+    public static final float[] BOTTOM_VERTS = {0, 0, 0, 1f, 0.015625f, 1f};
     private static final float[] BOTTOM_UVS = {0.3828125f, 0.0f, 0.51171875f, 0.00390625f, 0.125f, 0.12890625f, 0.0f, 0.0f, 0.3828125f, 0.015625f, 0.5078125f, 0.01953125f, 0.265625f, 0.25f, 0.39453125f, 0.25390625f, 0.25f, 0.0f, 0.125f, 0.12890625f, 0.3828125f, 0.0078125f, 0.5078125f, 0.01171875f};
 
-    public static final float[] WEST_VERTS = {0, 0.015625f, 0, 0.015625f, 1.015625f, 1};
+    public static final float[] WEST_VERTS = {0, 0.015625f, 0, 0.015625f, 1.015625f, 1f};
     private static final float[] WEST_UVS = {0.1328125f, 0.1328125f, 0.26171875f, 0.2578125f, 0.12890625f, 0.51171875f, 0.125f, 0.3828125f, 0.1640625f, 0.3828125f, 0.16796875f, 0.5078125f, 0.0f, 0.1328125f, 0.12890625f, 0.2578125f, 0.13671875f, 0.3828125f, 0.1328125f, 0.51171875f, 0.15625f, 0.3828125f, 0.16015625f, 0.5078125f};
 
-    public static final float[] EAST_VERTS = {0.984375f, 0.015625f, 0, 1, 1.015625f, 1};
+    public static final float[] EAST_VERTS = {0.984375f, 0.015625f, 0, 1f, 1.015625f, 1f};
     private static final float[] EAST_UVS = {0.0f, 0.2578125f, 0.12890625f, 0.3828125f, 0.14453125f, 0.51171875f, 0.140625f, 0.3828125f, 0.1796875f, 0.3828125f, 0.18359375f, 0.5078125f, 0.25f, 0.0f, 0.37890625f, 0.125f, 0.15234375f, 0.3828125f, 0.1484375f, 0.51171875f, 0.171875f, 0.3828125f, 0.17578125f, 0.5078125f};
 
     public static final float[] NORTH_VERTS = {0.015625f, 0.015625f, 0, 0.984375f, 1.015625f, 0.015625f};
     private static final float[] NORTH_UVS = {0.1953125f, 0.3828125f, 0.19921875f, 0.5078125f, 0.50390625f, 0.02734375f, 0.3828125f, 0.0234375f, 0.2578125f, 0.2578125f, 0.37890625f, 0.3828125f, 0.1875f, 0.3828125f, 0.19140625f, 0.5078125f, 0.50390625f, 0.03125f, 0.3828125f, 0.03515625f, 0.1328125f, 0.2578125f, 0.25390625f, 0.3828125f};
 
-    public static final float[] SOUTH_VERTS = {0.015625f, 0.015625f, 0.984375f, 0.984375f, 1.015625f, 1};
+    public static final float[] SOUTH_VERTS = {0.015625f, 0.015625f, 0.984375f, 0.984375f, 1.015625f, 1f};
     private static final float[] SOUTH_UVS = {0.2109375f, 0.3828125f, 0.21484375f, 0.5078125f, 0.50390625f, 0.04296875f, 0.3828125f, 0.0390625f, 0.0f, 0.3828125f, 0.12109375f, 0.5078125f, 0.203125f, 0.3828125f, 0.20703125f, 0.5078125f, 0.50390625f, 0.046875f, 0.3828125f, 0.05078125f, 0.265625f, 0.125f, 0.38671875f, 0.25f};
 
     private final BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
@@ -88,8 +91,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
         public static final RenderState.TransparencyState TRANSLUCENT_BLEND = new RenderState.TransparencyState("translucent_blend", () -> {
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            //RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE_MINUS_SRC_COLOR, GlStateManager.DestFactor.ONE);
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.DST_COLOR);
+            //RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         }, () -> {
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
@@ -102,9 +105,8 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
                     .setDiffuseLightingState(DIFFUSE_LIGHTING)
                     .setAlphaState(DEFAULT_ALPHA)
                     .setCullState(NO_CULL)
-                    .setDepthTestState(LEQUAL_DEPTH_TEST)
                     .setLightmapState(LIGHTMAP)
-                    .setOverlayState(OVERLAY)
+                    .setLayeringState(VIEW_OFFSET_Z_LAYERING)
                     .createCompositeState(true);
             return create("entity_translucent_z_offset", DefaultVertexFormats.NEW_ENTITY, 7, 256, true, true, rendertype$state);
         }
