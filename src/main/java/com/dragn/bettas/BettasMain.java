@@ -8,7 +8,9 @@ import com.dragn.bettas.item.AllRound;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.tank.Tank;
 import com.dragn.bettas.tank.TankTile;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluids;
@@ -77,6 +79,7 @@ public class BettasMain {
         ForgeRegistries.BLOCKS.register(new Decor("seagrass", Items.SEAGRASS));
         ForgeRegistries.BLOCKS.register(new Decor("substrate", Items.SAND));
     }
+    public static final RegistryObject<Block> TANK2 = BLOCKS.register("tank2", () -> new Block(AbstractBlock.Properties.of(Material.GLASS)));
 
 
     /* ITEMS */

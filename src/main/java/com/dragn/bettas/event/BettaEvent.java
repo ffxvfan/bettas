@@ -6,12 +6,21 @@ import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.betta.BettaRender;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.snail.SnailRender;
+import com.dragn.bettas.tank.TankLoader;
+import com.dragn.bettas.tank.TankModel;
 import com.dragn.bettas.tank.TankTileRenderer;
+import com.sun.prism.Texture;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -53,5 +62,10 @@ public class BettaEvent {
 
         /* REGISTER TANK TILE ENTITY*/
         ClientRegistry.bindTileEntityRenderer(BettasMain.TANK_TILE.get(), TankTileRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void modelRegistryEvent(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(TankLoader.LOCATION, TankLoader.INSTANCE);
     }
 }

@@ -83,37 +83,6 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
 
     private final BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRenderer();
 
-    private static class CustomRenderType extends RenderType {
-
-        public CustomRenderType(String name, VertexFormat format, int mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
-            super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
-        }
-
-        public static final RenderState.TransparencyState TRANSLUCENT_BLEND = new RenderState.TransparencyState("translucent_blend", () -> {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.DST_COLOR);
-            //RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        }, () -> {
-            RenderSystem.disableBlend();
-            RenderSystem.defaultBlendFunc();
-        });
-
-        public static RenderType entityTranslucentZOffset(ResourceLocation location) {
-            RenderType.State rendertype$state = RenderType.State.builder()
-                    .setTextureState(new RenderState.TextureState(location, false, false))
-                    .setTransparencyState(TRANSLUCENT_BLEND)
-                    .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                    .setAlphaState(DEFAULT_ALPHA)
-                    .setCullState(NO_CULL)
-                    .setLightmapState(LIGHTMAP)
-                    .setLayeringState(VIEW_OFFSET_Z_LAYERING)
-                    .createCompositeState(true);
-            return create("entity_translucent_z_offset", DefaultVertexFormats.NEW_ENTITY, 7, 256, true, true, rendertype$state);
-        }
-    }
-
-
-
     public TankTileRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
     }
@@ -122,7 +91,7 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
     public void render(TankTile tankTile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightVal, int overlay) {
         matrixStack.pushPose();
 
-        IVertexBuilder iVertexBuilder = buffer.getBuffer(CustomRenderType.entityTranslucentZOffset(ALGAE_LEVEL[tankTile.algae]));
+        IVertexBuilder iVertexBuilder = buffer.getBuffer(RenderType.entityTranslucent(ALGAE_LEVEL[tankTile.algae]));
         renderPart(iVertexBuilder, matrixStack, lightVal, overlay, BOTTOM_VERTS, BOTTOM_UVS);
 
         if((tankTile.connected & TankTile.CONNECTED_NORTH) == 0) {
