@@ -4,12 +4,13 @@ package com.dragn.bettas.event;
 import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.betta.BettaRender;
+import com.dragn.bettas.koi.KoiEntity;
+import com.dragn.bettas.koi.KoiRender;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.snail.SnailRender;
 import com.dragn.bettas.tank.TankLoader;
 import com.dragn.bettas.tank.TankModel;
 import com.dragn.bettas.tank.TankTileRenderer;
-import com.sun.prism.Texture;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -36,6 +37,7 @@ public class BettaEvent {
     public static void entityAttrbiuteCreationEvent(EntityAttributeCreationEvent event) {
         event.put(BettasMain.BETTA_ENTITY.get(), BettaEntity.createAttributes().build());
         event.put(BettasMain.SNAIL_ENTITY.get(), SnailEntity.createAttributes().build());
+        event.put(BettasMain.KOI_ENTITY.get(), KoiEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -44,6 +46,7 @@ public class BettaEvent {
         /* REGISTER RENDERERS */
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.BETTA_ENTITY.get(), BettaRender::new);
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.SNAIL_ENTITY.get(), SnailRender::new);
+        RenderingRegistry.registerEntityRenderingHandler(BettasMain.KOI_ENTITY.get(), KoiRender::new);
 
 
         /* REGISTER BETTA SPAWNING */
@@ -57,8 +60,15 @@ public class BettaEvent {
                 BettasMain.SNAIL_ENTITY.get(),
                 EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                SnailEntity::checkSnailSpawnRules
-        );
+                SnailEntity::checkSnailSpawnRules);
+
+
+        EntitySpawnPlacementRegistry.register(
+                BettasMain.KOI_ENTITY.get(),
+                EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                SnailEntity::checkFishSpawnRules);
+
 
         /* REGISTER TANK TILE ENTITY*/
         ClientRegistry.bindTileEntityRenderer(BettasMain.TANK_TILE.get(), TankTileRenderer::new);
