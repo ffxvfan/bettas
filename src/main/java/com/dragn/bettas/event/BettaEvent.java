@@ -70,6 +70,8 @@ public class BettaEvent {
                 SnailEntity::checkFishSpawnRules);
 
 
+        RenderTypeLookup.setRenderLayer(BettasMain.TANK2.get(), RenderType.solid());
+
         /* REGISTER TANK TILE ENTITY*/
         ClientRegistry.bindTileEntityRenderer(BettasMain.TANK_TILE.get(), TankTileRenderer::new);
     }
