@@ -33,7 +33,7 @@ public class TankTileRenderer extends TileEntityRenderer<TankTile> {
             new ResourceLocation(BettasMain.MODID, "textures/blocks/algae4.png"),
     };
 
-
+    // west, up, south, east, down, north
     private static final int[] NORMALS = {-1, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 0, -1};
     private static final int[] INDICES3 = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
     private static final int[] INDICES6 = {0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5};

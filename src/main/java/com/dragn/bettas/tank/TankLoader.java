@@ -40,7 +40,7 @@ public class TankLoader implements IModelLoader<TankLoader.TankModelGeometry> {
 
         @Override
         public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            return Arrays.asList(TankModel.MATERIAL);
+            return Arrays.asList(TankModel.BASE, TankModel.WALLS);
         }
     }
 }
