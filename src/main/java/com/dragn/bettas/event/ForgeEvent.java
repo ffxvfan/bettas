@@ -11,21 +11,14 @@ import net.minecraftforge.fml.common.Mod;
 
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-
 public class ForgeEvent {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerBiomes(BiomeLoadingEvent event) {
         switch (event.getCategory()) {
-
             case SWAMP:
-                event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(BettasMain.KOI_ENTITY.get(), 4, 2, 6));
-                break;
-
             case RIVER:
                 event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(BettasMain.KOI_ENTITY.get(), 4, 2, 6));
-                break;
-
         }
     }
 }
