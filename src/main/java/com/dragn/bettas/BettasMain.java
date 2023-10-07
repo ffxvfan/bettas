@@ -81,7 +81,6 @@ public class BettasMain {
         ForgeRegistries.BLOCKS.register(new Decor("seagrass", Items.SEAGRASS));
         ForgeRegistries.BLOCKS.register(new Decor("substrate", Items.SAND));
     }
-    public static final RegistryObject<Block> TANK2 = BLOCKS.register("tank2", () -> new Block(AbstractBlock.Properties.of(Material.GLASS).noOcclusion()));
 
 
     /* ITEMS */

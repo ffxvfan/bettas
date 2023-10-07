@@ -51,22 +51,13 @@ public class Tank extends Block implements IWaterLoggable {
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState p_149645_1_) {
-        return BlockRenderType.INVISIBLE;
-    }
-
-
-
-    @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, IWorld iWorld, BlockPos pos1, BlockPos pos2) {
-        if(!(direction == Direction.UP || direction == Direction.DOWN)) {
-            Block block = iWorld.getBlockState(pos2).getBlock();
-            if (block instanceof Tank) {
-                ((TankTile) iWorld.getBlockEntity(pos1)).addConnected(direction);
-                ((TankTile) iWorld.getBlockEntity(pos2)).addConnected(direction.getOpposite());
-            } else if (block instanceof AirBlock) {
-                ((TankTile) iWorld.getBlockEntity(pos1)).removeConnected(direction);
-            }
+        Block block = iWorld.getBlockState(pos2).getBlock();
+        if (block instanceof Tank) {
+            ((TankTile) iWorld.getBlockEntity(pos1)).addConnected(direction);
+            ((TankTile) iWorld.getBlockEntity(pos2)).addConnected(direction.getOpposite());
+        } else if (block instanceof AirBlock) {
+            ((TankTile) iWorld.getBlockEntity(pos1)).removeConnected(direction);
         }
         return state1;
     }

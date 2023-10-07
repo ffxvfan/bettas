@@ -16,7 +16,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.client.model.ModelDataManager;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,23 +29,18 @@ import java.util.stream.Stream;
 
 public class TankTile extends TileEntity implements ITickableTileEntity {
 
-    public static final byte CONNECTED_SOUTH = 0b1;
-    public static final byte CONNECTED_WEST = 0b10;
-    public static final byte CONNECTED_NORTH = 0b100;
-    public static final byte CONNECTED_EAST = 0b1000;
+    public static final ModelProperty<Byte> CONNECTED = new ModelProperty<>();
+    public static final ModelProperty<Integer> ALGAE = new ModelProperty<>();
 
-    public static final VoxelShape NORTH = createBox(TankTileRenderer.NORTH_VERTS);
-    public static final VoxelShape EAST = createBox(TankTileRenderer.EAST_VERTS);
-    public static final VoxelShape SOUTH = createBox(TankTileRenderer.SOUTH_VERTS);
-    public static final VoxelShape WEST = createBox(TankTileRenderer.WEST_VERTS);
-    public static final VoxelShape BOTTOM = createBox(TankTileRenderer.BOTTOM_VERTS);
+    public static final VoxelShape NORTH = VoxelShapes.box(0, 0, 0, 1, 1, 0.03125f);
+    public static final VoxelShape EAST = VoxelShapes.box(0.96875f, 0, 0, 1, 1, 1);
+    public static final VoxelShape SOUTH = VoxelShapes.box(0, 0, 0.96875f, 1, 1, 1);
+    public static final VoxelShape WEST = VoxelShapes.box(0, 0, 0, 0.03125f, 1, 1);
+    public static final VoxelShape UP = VoxelShapes.box(0, 0, 0, 0, 0, 0);
+    public static final VoxelShape DOWN = VoxelShapes.box(0, 0, 0, 1, 0.03125f, 1);
 
-    private static final VoxelShape[] SHAPES = {SOUTH, WEST, NORTH, EAST};
-
-    private static VoxelShape createBox(float[] v) {
-        return VoxelShapes.box(v[0], v[1], v[2], v[3], v[4], v[5]);
-    }
-
+    // this needs to be the same order as the direction enum
+    private static final VoxelShape[] SHAPES = {DOWN, UP, NORTH, SOUTH, WEST, EAST};
 
     // don't ask
     private static final class OrderedSet {
@@ -89,13 +89,13 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     private final OrderedSet decor = new OrderedSet();
 
-    public VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, BOTTOM);
-    public byte connected = 0b0000;
+    public VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, UP, DOWN);
 
+    public byte connected = 0;
     public int algae = 0;
 
     // 24000 ticks in a minecraft day, algae increments every 3 days
-    private final long threshold = 20  * 3;
+    private final long threshold = 20 * 3;
     private long count = 0;
 
     public TankTile() {
@@ -104,19 +104,20 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        if(!this.level.isClientSide) {
-            this.count++;
+        this.count++;
 
-            if(this.threshold - this.count == 0) {
-                this.incrementAlgae();
-                this.count = 0;
-            }
+        if(this.threshold - this.count == 0) {
+            this.incrementAlgae();
+            this.count = 0;
         }
     }
 
     public void incrementAlgae() {
         this.algae = Math.min(4, this.algae + 1);
         this.setChanged();
+        if(this.level.isClientSide) {
+            ModelDataManager.requestModelDataRefresh(this);
+        }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
@@ -126,22 +127,31 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         boolean decremented = prev != this.algae;
 
         this.setChanged();
+        if(this.level.isClientSide) {
+            ModelDataManager.requestModelDataRefresh(this);
+        }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 
         return decremented;
     }
 
     public void addConnected(Direction direction) {
-        this.connected |= 1 << direction.get2DDataValue();
-        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.ONLY_FIRST);
+        this.connected |= 1 << direction.get3DDataValue();
+        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get3DDataValue()], IBooleanFunction.ONLY_FIRST);
         this.setChanged();
+        if(this.level.isClientSide) {
+            ModelDataManager.requestModelDataRefresh(this);
+        }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
     public void removeConnected(Direction direction) {
-        this.connected &= ~(1 << direction.get2DDataValue());
-        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get2DDataValue()], IBooleanFunction.OR);
+        this.connected &= ~(1 << direction.get3DDataValue());
+        this.shape = VoxelShapes.join(this.shape, SHAPES[direction.get3DDataValue()], IBooleanFunction.OR);
         this.setChanged();
+        if(this.level.isClientSide) {
+            ModelDataManager.requestModelDataRefresh(this);
+        }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
@@ -213,5 +223,14 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         this.algae = nbt.getInt("Algae");
         this.connected = nbt.getByte("Connected");
         this.decor.fromNBT(nbt.getCompound("Decor"));
+    }
+
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new ModelDataMap.Builder()
+                .withInitial(CONNECTED, this.connected)
+                .withInitial(ALGAE, this.algae)
+                .build();
     }
 }

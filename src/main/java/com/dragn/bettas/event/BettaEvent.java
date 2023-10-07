@@ -69,7 +69,9 @@ public class BettaEvent {
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 SnailEntity::checkFishSpawnRules);
 
-        RenderTypeLookup.setRenderLayer(BettasMain.TANK2.get(), RenderType.translucent());
+
+        /* SET BLOCK RENDER LAYERS */
+        RenderTypeLookup.setRenderLayer(BettasMain.TANK.get(), RenderType.translucent());
 
 
         /* REGISTER TANK TILE ENTITY*/

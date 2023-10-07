@@ -23,9 +23,7 @@ public class AlgaeScraper extends Item {
 
         if(tile instanceof TankTile) {
             PlayerEntity player = context.getPlayer();
-            player.getItemInHand(context.getHand()).hurtAndBreak(1, player, e -> {
-                e.broadcastBreakEvent(context.getHand());
-            });
+            player.getItemInHand(context.getHand()).hurtAndBreak(1, player, e -> e.broadcastBreakEvent(context.getHand()));
             boolean decremented = ((TankTile) tile).decrementAlgae();
             if(decremented) {
                 BlockPos pos = tile.getBlockPos();
