@@ -39,6 +39,11 @@ public class Tank extends Block implements IWaterLoggable {
     }
 
     @Override
+    public VoxelShape getInteractionShape(BlockState state, IBlockReader iBlockReader, BlockPos pos) {
+        return VoxelShapes.block();
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, IBlockReader iBlockReader, BlockPos pos, ISelectionContext context) {
         TileEntity tile = iBlockReader.getBlockEntity(pos);
         if(tile instanceof TankTile) {
@@ -71,6 +76,8 @@ public class Tank extends Block implements IWaterLoggable {
         }
         return state1;
     }
+
+
 
     @Override
     public boolean hasTileEntity(BlockState state) {

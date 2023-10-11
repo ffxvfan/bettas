@@ -111,12 +111,6 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        this.setChanged();
-        if(this.level.isClientSide) {
-            ModelDataManager.requestModelDataRefresh(this);
-        }
-        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-
         if(this.getBlockState().getValue(WATERLOGGED)) {
             this.age++;
             if (this.threshold - this.age == 0) {
