@@ -27,7 +27,7 @@ public class AlgaeScraper extends Item {
             boolean decremented = ((TankTile) tile).decrementAlgae();
             if(decremented) {
                 BlockPos pos = tile.getBlockPos();
-                for(int i = 0; i < 10; i++) {
+                for(int i = 0; i < 6; i++) {
                     double x = pos.getX() + (Math.random() * 2 - 1) + 0.5;
                     double y = pos.getY() + (Math.random() * 2 - 1) + 0.5;
                     double z = pos.getZ() + (Math.random() * 2 - 1) + 0.5;

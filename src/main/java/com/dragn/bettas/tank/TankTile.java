@@ -27,9 +27,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static net.minecraft.state.properties.BlockStateProperties.WATERLOGGED;
+
+
 public class TankTile extends TileEntity implements ITickableTileEntity {
 
-    public static final ModelProperty<Byte> CONNECTED = new ModelProperty<>();
+    public static final ModelProperty<Integer> CONNECTED = new ModelProperty<>();
     public static final ModelProperty<Integer> ALGAE = new ModelProperty<>();
 
     public static final VoxelShape NORTH = VoxelShapes.box(0, 0, 0, 1, 1, 0.03125f);
@@ -47,9 +50,13 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         private final Map<BlockState, BlockState> map = new HashMap<>();
         private BlockState last;
 
-        public void add(BlockState state) {
-            map.put(state, last);
-            last = state;
+        public boolean add(BlockState state) {
+            if(!map.containsKey(state)) {
+                map.putIfAbsent(state, last);
+                last = state;
+                return true;
+            }
+            return false;
         }
 
         public BlockState remove() {
@@ -89,14 +96,14 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     private final OrderedSet decor = new OrderedSet();
 
-    public VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, UP, DOWN);
+    private VoxelShape shape = VoxelShapes.or(NORTH, EAST, SOUTH, WEST, UP, DOWN);
 
-    public byte connected = 0;
+    public int connected = 0;
     public int algae = 0;
 
     // 24000 ticks in a minecraft day, algae increments every 3 days
     private final long threshold = 20 * 3;
-    private long count = 0;
+    private long age = 0;
 
     public TankTile() {
         super(BettasMain.TANK_TILE.get());
@@ -104,12 +111,28 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        this.count++;
-
-        if(this.threshold - this.count == 0) {
-            this.incrementAlgae();
-            this.count = 0;
+        this.setChanged();
+        if(this.level.isClientSide) {
+            ModelDataManager.requestModelDataRefresh(this);
         }
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+
+        if(this.getBlockState().getValue(WATERLOGGED)) {
+            this.age++;
+            if (this.threshold - this.age == 0) {
+                this.incrementAlgae();
+                this.age = 0;
+            }
+        }
+    }
+
+    public VoxelShape getShape() {
+        for(int i = 0; i < SHAPES.length; i++) {
+            if(((this.connected >> i) & 1) == 1) {
+                this.shape = VoxelShapes.join(this.shape, SHAPES[i], IBooleanFunction.ONLY_FIRST);
+            }
+        }
+        return this.shape;
     }
 
     public void incrementAlgae() {
@@ -119,6 +142,7 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
             ModelDataManager.requestModelDataRefresh(this);
         }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+
     }
 
     public boolean decrementAlgae() {
@@ -127,11 +151,10 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         boolean decremented = prev != this.algae;
 
         this.setChanged();
-        if(this.level.isClientSide) {
+        if (this.level.isClientSide) {
             ModelDataManager.requestModelDataRefresh(this);
         }
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-
         return decremented;
     }
 
@@ -175,11 +198,12 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
         super.setRemoved();
     }
 
-    public void addDecor(Item item, Direction direction) {
+    public boolean addDecor(Item item, Direction direction) {
         Decor block = Decor.ITEM_TO_DECOR.get(item);
-        this.decor.add(block.facing(direction));
+        boolean added = this.decor.add(block.facing(direction));
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        return added;
     }
 
     public Stream<BlockState> allDecor() {
@@ -187,14 +211,15 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     }
 
     public void slowGrowth() {
-        this.count = -threshold;
+        this.age = -threshold;
     }
 
     @Override
     public CompoundNBT save(CompoundNBT compoundNBT) {
         super.save(compoundNBT);
         compoundNBT.putInt("Algae", this.algae);
-        compoundNBT.putByte("Connected", this.connected);
+        compoundNBT.putInt("Connected", this.connected);
+        compoundNBT.putLong("Age", this.age);
         compoundNBT.put("Decor", decor.asNBT());
         return compoundNBT;
     }
@@ -203,7 +228,8 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public void load(BlockState state, CompoundNBT compoundNBT) {
         super.load(state, compoundNBT);
         this.algae = compoundNBT.getInt("Algae");
-        this.connected = compoundNBT.getByte("Connected");
+        this.connected = compoundNBT.getInt("Connected");
+        this.age = compoundNBT.getLong("Age");
         this.decor.fromNBT(compoundNBT.getCompound("Decor"));
     }
 
@@ -212,7 +238,8 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("Algae", this.algae);
-        nbt.putByte("Connected", this.connected);
+        nbt.putInt("Connected", this.connected);
+        nbt.putLong("Age", this.age);
         nbt.put("Decor", this.decor.asNBT());
         return new SUpdateTileEntityPacket(getBlockPos(), -1, nbt);
     }
@@ -221,7 +248,8 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT nbt = pkt.getTag();
         this.algae = nbt.getInt("Algae");
-        this.connected = nbt.getByte("Connected");
+        this.connected = nbt.getInt("Connected");
+        this.age = nbt.getLong("Age");
         this.decor.fromNBT(nbt.getCompound("Decor"));
     }
 

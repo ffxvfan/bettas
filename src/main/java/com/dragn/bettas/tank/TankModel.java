@@ -45,11 +45,12 @@ public class TankModel implements IDynamicBakedModel {
 
     private final Function<RenderMaterial, TextureAtlasSprite> spriteGetter;
     private final ItemOverrideList overrides;
+    private final ItemCameraTransforms transforms;
 
     public TankModel(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         this.spriteGetter = spriteGetter;
         this.overrides = overrides;
-
+        this.transforms = owner.getCameraTransforms();
     }
 
     //0        1        2        3        4        5        6        7
@@ -115,7 +116,7 @@ public class TankModel implements IDynamicBakedModel {
 
         List<BakedQuad> quads = new ArrayList<>();
 
-        byte connected = 0;
+        int connected = 0;
         int algae = 0;
 
         if(extraData.getData(TankTile.CONNECTED) != null) {
@@ -219,5 +220,10 @@ public class TankModel implements IDynamicBakedModel {
     @Override
     public ItemOverrideList getOverrides() {
         return this.overrides;
+    }
+
+    @Override
+    public ItemCameraTransforms getTransforms() {
+        return this.transforms;
     }
 }

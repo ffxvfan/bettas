@@ -62,7 +62,6 @@ public class BettaEvent {
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 SnailEntity::checkSnailSpawnRules);
 
-
         EntitySpawnPlacementRegistry.register(
                 BettasMain.KOI_ENTITY.get(),
                 EntitySpawnPlacementRegistry.PlacementType.IN_WATER,

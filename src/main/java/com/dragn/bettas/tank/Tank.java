@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -41,13 +42,22 @@ public class Tank extends Block implements IWaterLoggable {
     public VoxelShape getShape(BlockState state, IBlockReader iBlockReader, BlockPos pos, ISelectionContext context) {
         TileEntity tile = iBlockReader.getBlockEntity(pos);
         if(tile instanceof TankTile) {
-            return ((TankTile) tile).shape;
+            return ((TankTile) tile).getShape();
         }
         return VoxelShapes.empty();
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return (state.getValue(WATERLOGGED) ? Fluids.WATER : Fluids.EMPTY).defaultFluidState();
+    }
+
+    @Override
+    public boolean placeLiquid(IWorld iWorld, BlockPos pos, BlockState blockState, FluidState fluidState) {
+        if(!blockState.getValue(WATERLOGGED) && fluidState.getFluidState().getType() == Fluids.WATER) {
+            iWorld.setBlock(pos, blockState.setValue(WATERLOGGED, true), 3);
+        }
+        return false;
     }
 
     @Override
@@ -84,7 +94,9 @@ public class Tank extends Block implements IWaterLoggable {
                     world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack));
                 }
             } else if(Decor.ITEM_TO_DECOR.containsKey(item)) {
-                tankTile.addDecor(item, player.getDirection());
+                if(tankTile.addDecor(item, player.getDirection())) {
+                    player.getItemInHand(hand).shrink(1);
+                }
             }
         }
         return super.use(state, world, pos, player, hand, blockRayTraceResult);

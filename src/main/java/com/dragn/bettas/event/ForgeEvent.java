@@ -18,7 +18,9 @@ public class ForgeEvent {
         switch (event.getCategory()) {
             case SWAMP:
             case RIVER:
-                event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(BettasMain.KOI_ENTITY.get(), 4, 2, 6));
+                event.getSpawns().getSpawner(EntityClassification.WATER_AMBIENT).add(new MobSpawnInfo.Spawners(BettasMain.KOI_ENTITY.get(), 4, 2, 6));
+                event.getSpawns().getSpawner(EntityClassification.WATER_AMBIENT).add(new MobSpawnInfo.Spawners(BettasMain.BETTA_ENTITY.get(), 3, 3, 15));
+                event.getSpawns().getSpawner(EntityClassification.WATER_AMBIENT).add(new MobSpawnInfo.Spawners(BettasMain.SNAIL_ENTITY.get(), 1, 1, 5));
         }
     }
 }

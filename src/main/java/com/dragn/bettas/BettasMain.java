@@ -36,6 +36,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.system.CallbackI;
 import software.bernie.geckolib3.GeckoLib;
 
 
@@ -63,8 +64,8 @@ public class BettasMain {
 
     /* ENTITIES */
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MODID);
-    public static final RegistryObject<EntityType<BettaEntity>> BETTA_ENTITY = ENTITY_TYPES.register("betta", () -> EntityType.Builder.of(BettaEntity::new, EntityClassification.WATER_AMBIENT).sized(0.0625f, 0.059375f).build(new ResourceLocation(MODID, "betta").toString()));
-    public static final RegistryObject<EntityType<SnailEntity>> SNAIL_ENTITY = ENTITY_TYPES.register("snail", () -> EntityType.Builder.of(SnailEntity::new, EntityClassification.WATER_AMBIENT).sized(0.1f, 0.0125f).build(new ResourceLocation(MODID, "snail").toString()));
+    public static final RegistryObject<EntityType<BettaEntity>> BETTA_ENTITY = ENTITY_TYPES.register("betta", () -> EntityType.Builder.of(BettaEntity::new, EntityClassification.WATER_AMBIENT).sized(0.4f, 0.1f).build(new ResourceLocation(MODID, "betta").toString()));
+    public static final RegistryObject<EntityType<SnailEntity>> SNAIL_ENTITY = ENTITY_TYPES.register("snail", () -> EntityType.Builder.of(SnailEntity::new, EntityClassification.WATER_AMBIENT).sized(0.1f, 0.1f).build(new ResourceLocation(MODID, "snail").toString()));
     public static final RegistryObject<EntityType<KoiEntity>> KOI_ENTITY = ENTITY_TYPES.register("koi", () -> EntityType.Builder.of(KoiEntity::new, EntityClassification.WATER_AMBIENT).sized(0.7f, 0.4f).build(new ResourceLocation(MODID, "koi").toString()));
 
 
@@ -80,6 +81,9 @@ public class BettasMain {
         ForgeRegistries.BLOCKS.register(new Decor("kelp", Items.KELP));
         ForgeRegistries.BLOCKS.register(new Decor("seagrass", Items.SEAGRASS));
         ForgeRegistries.BLOCKS.register(new Decor("substrate", Items.SAND));
+        ForgeRegistries.BLOCKS.register(new Decor("red_substrate", Items.RED_SAND));
+        ForgeRegistries.BLOCKS.register(new Decor("gravel_substrate", Items.GRAVEL));
+        ForgeRegistries.BLOCKS.register(new Decor("dirt_substrate", Items.DIRT));
     }
 
 

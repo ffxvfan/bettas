@@ -1,0 +1,65 @@
+{
+  "credit": "Made with Blockbench",
+  "textures": {
+    "0": "bettas:blocks/dirt_substrate",
+    "particle": "bettas:blocks/dirt_substrate"
+  },
+  "elements": [
+    {
+      "from": [0.25, 0.25, 0.25],
+      "to": [15.75, 1, 15.75],
+      "faces": {
+        "north": {"uv": [8, 0, 15.75, 0.5], "texture": "#0"},
+        "east": {"uv": [8, 0.5, 15.75, 1], "texture": "#0"},
+        "south": {"uv": [8, 1, 15.75, 1.5], "texture": "#0"},
+        "west": {"uv": [8, 1.5, 15.75, 2], "texture": "#0"},
+        "up": {"uv": [7.75, 7.75, 0, 0], "texture": "#0"},
+        "down": {"uv": [7.75, 8, 0, 15.75], "texture": "#0"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [89.25, 0, 0],
+      "translation": [0, 3, 5.25],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [89.25, 0, 0],
+      "translation": [0, 3, 5.25],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "firstperson_righthand": {
+      "rotation": [89.25, 0, 0],
+      "translation": [0, 3, 5.25],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "firstperson_lefthand": {
+      "rotation": [89.25, 0, 0],
+      "translation": [0, 3, 5.25],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "gui": {
+      "rotation": [57.75, 0, 0],
+      "translation": [0, 3.5, 0]
+    },
+    "fixed": {
+      "translation": [0, 6, 0]
+    }
+  },
+  "groups": [
+    {
+      "name": "VoxelShapes",
+      "origin": [0, 0, 0],
+      "color": 0,
+      "children": [
+        {
+          "name": "Substrate",
+          "origin": [0, 0, 0],
+          "color": 0,
+          "children": [0]
+        }
+      ]
+    }
+  ]
+}
