@@ -40,6 +40,13 @@ public class KoiEntity extends AbstractGroupFishEntity implements IAnimatable {
         return 8;
     }
 
+
+    //Bucket
+    public void saveToBucketTag(ItemStack itemStack) {
+        super.saveToBucketTag(itemStack);
+        CompoundNBT compoundTag = itemStack.getOrCreateTag();
+        compoundTag.putInt("Variant", getTexture());
+    }
     protected ItemStack getBucketItemStack() {
         return new ItemStack(BettasMain.KOI_BUCKET.get());
     }
