@@ -101,7 +101,7 @@ public class Tank extends Block implements IWaterLoggable {
                     world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack));
                 }
             } else if(Decor.ITEM_TO_DECOR.containsKey(item)) {
-                if(tankTile.addDecor(item, player.getDirection())) {
+                if(tankTile.addDecor(item, player.getDirection().getCounterClockWise())) {
                     player.getItemInHand(hand).shrink(1);
                 }
             }
