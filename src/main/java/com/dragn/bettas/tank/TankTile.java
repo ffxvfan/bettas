@@ -102,7 +102,7 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
     public int algae = 0;
 
     // 24000 ticks in a minecraft day, algae increments every 3 days
-    private final long threshold = 20 * 3;
+    private final long threshold = 24000 * 3;
     private long age = 0;
 
     public TankTile() {
