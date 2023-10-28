@@ -3,7 +3,6 @@ package com.dragn.bettas.tank;
 import com.dragn.bettas.BettasMain;
 import com.dragn.bettas.decor.Decor;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +11,6 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -180,16 +178,6 @@ public class TankTile extends TileEntity implements ITickableTileEntity {
             return new ItemStack(Decor.DECOR_TO_ITEM.get(state.getBlock()));
         }
         return null;
-    }
-
-    @Override
-    public void setRemoved() {
-        BlockPos pos = this.worldPosition.offset(0.5, 0.5, 0.5);
-        decor.asStream().forEach(k -> {
-            ItemStack itemStack = new ItemStack(Decor.DECOR_TO_ITEM.get(k.getBlock()));
-            this.level.addFreshEntity(new ItemEntity(this.level, pos.getX(), pos.getY(), pos.getZ(), itemStack));
-        });
-        super.setRemoved();
     }
 
     public boolean addDecor(Item item, Direction direction) {

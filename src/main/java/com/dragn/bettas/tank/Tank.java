@@ -8,12 +8,10 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -77,7 +75,21 @@ public class Tank extends Block implements IWaterLoggable {
         return state1;
     }
 
-
+    @Override
+    public void onRemove(BlockState state1, World world, BlockPos pos, BlockState state2, boolean bool) {
+        if(!state1.is(state2.getBlock())) {
+            BlockPos offset = pos.offset(0.5, 0.5, 0.5);
+            TileEntity blockEntity = world.getBlockEntity(pos);
+            if(blockEntity instanceof TankTile) {
+                ((TankTile) blockEntity).allDecor().forEach(k -> {
+                    ItemStack itemStack = new ItemStack(Decor.DECOR_TO_ITEM.get((Decor)(k.getBlock())));
+                    world.addFreshEntity(new ItemEntity(world, offset.getX(), offset.getY(), offset.getZ(), itemStack));
+                    world.updateNeighbourForOutputSignal(pos, this);
+                });
+            }
+        }
+        super.onRemove(state1, world, pos, state2, bool);
+    }
 
     @Override
     public boolean hasTileEntity(BlockState state) {
