@@ -6,6 +6,8 @@ import com.dragn.bettas.betta.BettaEntity;
 import com.dragn.bettas.betta.BettaRender;
 import com.dragn.bettas.koi.KoiEntity;
 import com.dragn.bettas.koi.KoiRender;
+import com.dragn.bettas.seahorse.SeaHorseEntity;
+import com.dragn.bettas.seahorse.SeaHorseRender;
 import com.dragn.bettas.snail.SnailEntity;
 import com.dragn.bettas.snail.SnailRender;
 import com.dragn.bettas.tank.TankLoader;
@@ -38,6 +40,7 @@ public class BettaEvent {
         event.put(BettasMain.BETTA_ENTITY.get(), BettaEntity.createAttributes().build());
         event.put(BettasMain.SNAIL_ENTITY.get(), SnailEntity.createAttributes().build());
         event.put(BettasMain.KOI_ENTITY.get(), KoiEntity.createAttributes().build());
+        event.put(BettasMain.SEAHORSE_ENTITY.get(), SeaHorseEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -47,6 +50,7 @@ public class BettaEvent {
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.BETTA_ENTITY.get(), BettaRender::new);
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.SNAIL_ENTITY.get(), SnailRender::new);
         RenderingRegistry.registerEntityRenderingHandler(BettasMain.KOI_ENTITY.get(), KoiRender::new);
+        RenderingRegistry.registerEntityRenderingHandler(BettasMain.SEAHORSE_ENTITY.get(), SeaHorseRender::new);
 
 
         /* REGISTER BETTA SPAWNING */
@@ -64,6 +68,12 @@ public class BettaEvent {
 
         EntitySpawnPlacementRegistry.register(
                 BettasMain.KOI_ENTITY.get(),
+                EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                SnailEntity::checkFishSpawnRules);
+
+        EntitySpawnPlacementRegistry.register(
+                BettasMain.SEAHORSE_ENTITY.get(),
                 EntitySpawnPlacementRegistry.PlacementType.IN_WATER,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 SnailEntity::checkFishSpawnRules);
